@@ -425,9 +425,6 @@ class Game:
     def quit(self):
         for mesh in self.gameMeshes:
             glDeleteBuffers(1, (mesh.transformVBO,))
-        self.gameObjects.destroy()
-        self.gameMeshes.destroy()
-        self.gameMaterials.destroy()
         glDeleteProgram(self.shaderTextured)
         glDeleteProgram(self.shaderColored)
         pg.quit()
