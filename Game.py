@@ -64,7 +64,7 @@ class Game:
             self.lights.append(Light(
                 name = "light " + str(i),
                 position = [i*2, ii*2, 1],
-                color = [random.uniform(a = 0.5, b = 1) for x in range(3)]
+                color = [random.uniform(a = 0, b = 1) for x in range(3)]
             ))
             
 
