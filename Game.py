@@ -7,7 +7,7 @@ import random
 import Material as mat
 import ObjMesh as obj
 import Player as pl
-
+# import Physics as phy
 
 class Game:
     def __init__(self):
@@ -24,7 +24,7 @@ class Game:
 
         self.view.setProperties(800,600)
         self.camera.setProperties(45,640/480,0.1,40)
-        self.player.setProperties(position = [5, 5, 1], eulers = [0, 0, 0])
+        self.player.setProperties(position = [5, 5, 3], eulers = [0, 0, 0])
 
         #self.gameMeshes["CubeMesh"] = Mesh("models/cube.obj")
         #self.gameMaterials["CrateMat"] = Matt("crate", "png")
@@ -50,7 +50,7 @@ class Game:
 
         
         #CREATING ROOMS
-
+        
         for i in range(10):
             for ii in range(5):
                 self.gameObjects.append(GameObject(
@@ -64,7 +64,9 @@ class Game:
             self.lights.append(Light(
                 name = "light " + str(i),
                 position = [i*2, ii*2, 1],
-                color = [random.uniform(a = 0, b = 1) for x in range(3)]
+                color = [0.5,0.5,0.5]
+
+                # color = [random.uniform(a = 0, b = 1) for x in range(3)]
             ))
             
 
@@ -74,6 +76,7 @@ class Game:
             self.lights.append(Light(
                 name = "light " + str(i),
                 position = [random.uniform(a = -10, b = 10) for x in range(3)],
+                # color = []
                 color = [random.uniform(a = 0.5, b = 1) for x in range(3)]
             ))
 
@@ -93,18 +96,18 @@ class Game:
 
         keys = pg.key.get_pressed()
         if keys[pg.K_w]:
-            self.player.move(0, 0.0025*self.frameTime)
+            self.player.move(0, self.speedMultiplier*self.frameTime)
             return
         if keys[pg.K_a]:
-            self.player.move(90, 0.0025*self.frameTime)
+            self.player.move(90, self.speedMultiplier*self.frameTime)
             return
         if keys[pg.K_s]:
-            self.player.move(180, 0.0025*self.frameTime)
+            self.player.move(180, self.speedMultiplier*self.frameTime)
             return
         if keys[pg.K_d]:
-            self.player.move(-90, 0.0025*self.frameTime)
+            self.player.move(-90, self.speedMultiplier*self.frameTime)
             return
-
+     
         ### Other stuff (add scene-object related things here) ###
         for cube in self.gameObjects:
             cube.eulers = np.mod(
@@ -113,10 +116,12 @@ class Game:
                 dtype=np.float32
             )
         
-        
-        
+
         pass
 
+    # def physics(self):
+    #     # gravity
+    #     self.player.move
 
     #Don't change things after here unless you know what you're doing -Rob
 
@@ -125,6 +130,7 @@ class Game:
         self.currentTime = 0
         self.numFrames = 0
         self.frameTime = 0
+        self.speedMultiplier = 0.0025
         self.lightCount = 0
 
         self.gameObjects = []
@@ -169,6 +175,7 @@ class Game:
                     running = False
             #update objects, get controls
             self.update()
+            # self.physics()
             #refresh screen
             self.draw()
             self.showFrameRate()
