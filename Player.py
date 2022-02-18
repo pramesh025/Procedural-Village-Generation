@@ -1,6 +1,7 @@
 
 from OpenGL.GL import *
 import numpy as np
+from pygame import Vector3
 
 
 class Player:
@@ -16,6 +17,8 @@ class Player:
         self.moveSpeed = 1
         self.global_up = np.array([0, 0, 1], dtype=np.float32)
 
+    def rotate(self, vector, angle):
+        pass
 
 
     def move(self, direction, amount):

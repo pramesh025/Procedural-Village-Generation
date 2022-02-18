@@ -11,20 +11,29 @@ import Player as pl
 
 class Game:
     def __init__(self):
+        #Place Game variables
+
+        self.renderDistance = 10
+        self.gravity = 9.8
+
+        self.slowUpdateTime = 1
+        
+
         self.mainInit()
         pass
 
     
-    def start(self):
+    def start(self): #CALLED Before the first frame
         ####   list of created variables
         #  cubes =[8 cubes]
         #  lights = [8 lights]
         #  player
         ####   end of variable list
+        self.ckeydown = False
 
         self.view.setProperties(800,600)
-        self.camera.setProperties(45,640/480,0.1,40)
-        self.player.setProperties(position = [5, 5, 3], eulers = [0, 0, 0])
+        self.camera.setProperties(45,800/600,0.1,40)
+        self.player.setProperties(position = [5, 5, 1], eulers = [0, 0, 0])
 
         #self.gameMeshes["CubeMesh"] = Mesh("models/cube.obj")
         #self.gameMaterials["CrateMat"] = Matt("crate", "png")
@@ -84,7 +93,10 @@ class Game:
         
         pass
 
-    def update(self):
+    def slowUpdate(self): #called every certain amount of time
+        pass
+
+    def update(self): #Is called every frame
         ### mouse control ##
         (x,y) = pg.mouse.get_pos()
         theta_increment = self.frameTime * 0.05 * (320 - x)
@@ -107,7 +119,30 @@ class Game:
         if keys[pg.K_d]:
             self.player.move(-90, self.speedMultiplier*self.frameTime)
             return
-     
+
+        #Press c to put a crate where the player is
+        if keys[pg.K_c]:
+            if self.ckeydown == False:
+                #doo thu stuff
+                self.gameObjects.append(GameObject(
+                    name = "cube extra",
+                    position = self.player.position,
+                    eulers = [random.uniform(a = 0, b = 360) for x in range(3)],
+                    eulerVelocity = [random.uniform(a = -0.1, b = 0.1) for x in range(3)],
+                    mesh = self.gameMeshes[0], #Cube
+                    material = self.gameMaterials[0] #
+                ))
+                self.createTransform(self.gameMeshes[0])
+
+
+                print("C key pressed!")
+                self.ckeydown = True
+        else:
+            self.ckeydown = False
+            
+            
+
+
         ### Other stuff (add scene-object related things here) ###
         for cube in self.gameObjects:
             cube.eulers = np.mod(
@@ -290,45 +325,15 @@ class Game:
             ), 3
         )
         #create assets
-        #self.gameMaterials["CrateMat"].load()
-        #print(self.gameMaterials["CrateMat"])
 
         for mat in self.gameMaterials:
             mat.loadNow()
-
+        
         for mesh in self.gameMeshes:
             mesh.loadNow()
+            self.createTransform(mesh)
 
-            mesh.transforms = np.array([
-                pyrr.matrix44.create_identity(dtype = np.float32)
-                for i in range(len(mesh.assignedGameObjects))
-            ], dtype=np.float32)
-            glBindVertexArray(mesh.objmesh.vao)
-            mesh.transformVBO = glGenBuffers(1)
-            glBindBuffer(
-                GL_ARRAY_BUFFER, 
-                mesh.transformVBO
-            )
-            glBufferData(
-                GL_ARRAY_BUFFER, 
-                mesh.transforms.nbytes, 
-                mesh.transforms, 
-                GL_STATIC_DRAW
-            )
-            glEnableVertexAttribArray(5)
-            glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 64, ctypes.c_void_p(0))
-            glEnableVertexAttribArray(6)
-            glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 64, ctypes.c_void_p(16))
-            glEnableVertexAttribArray(7)
-            glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 64, ctypes.c_void_p(32))
-            glEnableVertexAttribArray(8)
-            glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 64, ctypes.c_void_p(48))
-            glVertexAttribDivisor(5,1)
-            glVertexAttribDivisor(6,1)
-            glVertexAttribDivisor(7,1)
-            glVertexAttribDivisor(8,1)
-
-        glUseProgram(self.shaderColored)
+        
         #get shader locations
         self.viewLocUntextured = glGetUniformLocation(self.shaderColored, "view")
         self.modelLocUntextured = glGetUniformLocation(self.shaderColored, "model")
@@ -340,6 +345,39 @@ class Game:
             ),1,GL_FALSE,projection_transform
         )
 
+        pass
+
+    def createTransform(self, mesh):           
+        mesh.transforms = np.array([
+            pyrr.matrix44.create_identity(dtype = np.float32)
+            for i in range(len(mesh.assignedGameObjects))
+        ], dtype=np.float32)
+        glBindVertexArray(mesh.objmesh.vao)
+        mesh.transformVBO = glGenBuffers(1)
+        glBindBuffer(
+            GL_ARRAY_BUFFER, 
+            mesh.transformVBO
+        )
+        glBufferData(
+            GL_ARRAY_BUFFER, 
+            mesh.transforms.nbytes, 
+            mesh.transforms, 
+            GL_STATIC_DRAW
+        )
+        glEnableVertexAttribArray(5)
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 64, ctypes.c_void_p(0))
+        glEnableVertexAttribArray(6)
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 64, ctypes.c_void_p(16))
+        glEnableVertexAttribArray(7)
+        glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 64, ctypes.c_void_p(32))
+        glEnableVertexAttribArray(8)
+        glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 64, ctypes.c_void_p(48))
+        glVertexAttribDivisor(5,1)
+        glVertexAttribDivisor(6,1)
+        glVertexAttribDivisor(7,1)
+        glVertexAttribDivisor(8,1)
+
+        glUseProgram(self.shaderColored)
         pass
 
     def createShader(self, vertexFilepath, fragmentFilepath):
