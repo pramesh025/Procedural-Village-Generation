@@ -7,7 +7,7 @@ import random
 import Material as mat
 import ObjMesh as obj
 import Player as pl
-
+from pygame import Vector3
 
 class Game:
     def __init__(self):
@@ -49,6 +49,15 @@ class Game:
             ))
 
         
+        self.Tile.append(Tile(
+            direction = 1,
+            mesh = self.gameMeshes[0], #Cube
+            material = self.gameMaterials[0], #
+            position = [0,0,1],
+            # tileCoord = Vector3(0.0, 0.0, 0.0),
+            neighbor = np.array(Tile)
+        ))
+
         #CREATING ROOMS
 
         for i in range(10):
@@ -63,7 +72,7 @@ class Game:
                 ))
             self.lights.append(Light(
                 name = "light " + str(i),
-                position = [i*2, ii*2, 1],
+                position = [i*2, 2*ii, 1],
                 color = [random.uniform(a = 0.5, b = 1) for x in range(3)]
             ))
             
@@ -140,6 +149,7 @@ class Game:
         self.gameMeshes = []
         self.gameMaterials = []
 
+        self.Tile = []
         self.start()
 
         #initialise pygame
@@ -448,6 +458,36 @@ class GameObject:
             self.mesh.assignGameObject(self)
         self.material = material
         
+class Tile:
+    # to be placed in the world
+    def __init__(self, direction, mesh, material, position, neighbor):
+        self.direction = direction
+        self.mesh = mesh
+        self.material = material
+        self.position = np.array(position, dtype=np.float32)
+        # self.tileCoord = Vector3(0.0, 0.0, 0.0)
+        
+        self.neighbor = np.array(neighbor, dtype=Tile) # upto 6 EW NS UD 
+        # self.buildPart = BuildPart(
+            
+        # )
+    # def toTileCoord(self, worldCoord):
+    #     self.tileCoord = worldCoord*2
+    
+    # def toWorldCoord(self, tileCoord):
+    #     self.worldCoord = tileCoord/2
+    
+    def rotateTile(self, direction):
+        pass
+
+    # def putTile(self, worldCoord):
+    #     self.gameObjects.append(GameObject(
+    #         direction = 1,
+    #         worldCoord = Vector3(0.0, 0.0, 0.0),
+    #         tileCoord = Vector3(0.0, 0.0, 0.0),
+    #         neighbor = np.array(Tile)
+    #     ))
+
 class Light:
     def __init__(self, name, position, color):
         self.name = name
