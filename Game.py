@@ -7,7 +7,7 @@ import random
 import Material as mat
 import ObjMesh as obj
 import Player as pl
-# import Physics as phy
+import Physics as phy
 
 class Game:
     def __init__(self):
@@ -101,6 +101,7 @@ class Game:
         (x,y) = pg.mouse.get_pos()
         theta_increment = self.frameTime * 0.05 * (320 - x)
         phi_increment = self.frameTime * 0.05 * (240 - y)
+        # print(theta_increment,phi_increment)
         self.player.increment_direction(theta_increment, phi_increment)
         pg.mouse.set_pos((320,240))
 
@@ -119,7 +120,12 @@ class Game:
         if keys[pg.K_d]:
             self.player.move(-90, self.speedMultiplier*self.frameTime)
             return
-
+        if keys[pg.K_LSHIFT]:
+            self.player.pull_down(self.speedMultiplier*self.frameTime)
+            return
+        if keys[pg.K_SPACE]:
+            self.player.pull_up(self.speedMultiplier*self.frameTime)
+            return
         #Press c to put a crate where the player is
         if keys[pg.K_c]:
             if self.ckeydown == False:
@@ -174,7 +180,9 @@ class Game:
             position = [-10, 0, 0],
             eulers = [0, 0, 0]
         )
-        
+        self.physics = phy.physics(
+            position = [-10, 0, 0]
+        )
         self.camera = Camera(45,640/480,0.1,40)
         self.view = View(800,600)
 

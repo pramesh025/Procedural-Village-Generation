@@ -30,6 +30,17 @@ class Player:
         self.eulers[1] = (self.eulers[1] + theta_increase) % 360
         self.eulers[0] = min(max(self.eulers[0] + phi_increase,-89),89)
 
+    def pull_down(self,amount):
+        if(self.position[2] > -0.52):
+            print(self.position)
+            self.position[2] -= amount*1
+    
+    def pull_up(self,amount):
+        if(self.position[2] < 13):
+            print(self.position)
+            self.position[2] += amount*1
+    
+
     def get_forwards(self):
 
         return np.array(
