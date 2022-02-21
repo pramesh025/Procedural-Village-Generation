@@ -1,3 +1,4 @@
+from turtle import position
 import pygame as pg
 from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram,compileShader
@@ -7,6 +8,7 @@ import random
 import Material as mat
 import ObjMesh as obj
 import Player as pl
+import Physics as phy
 from pygame import Vector3
 
 
@@ -47,7 +49,7 @@ class Game:
         self.gameMaterials.append(Matt("wood", "png")) # 1
         self.gameMaterials.append(Matt("white", "png")) # 2
         
-        BuildingPart.addBuildingPart(self)
+        # BuildingPart.addBuildingPart(self)
         # Tile.addTile(self)
         # Tile.placeTile(self)
 
@@ -61,9 +63,9 @@ class Game:
                 mesh = self.gameMeshes[0], #Cube
                 material = self.gameMaterials[2] #
             ))
-        
+            
         #CREATING ROOMS
-
+        
         for i in range(10):
             for ii in range(5):
                 self.gameObjects.append(GameObject(
@@ -74,10 +76,13 @@ class Game:
                     mesh = self.gameMeshes[1], #Weird
                     material = self.gameMaterials[2] #white
                 ))
+                print(position)
             self.lights.append(Light(
                 name = "light " + str(i),
                 position = [i*2, ii*2, 1],
-                color = [random.uniform(a = 0, b = 1) for x in range(3)]
+                color = [0.5,0.5,0.5]
+
+                # color = [random.uniform(a = 0, b = 1) for x in range(3)]
             ))
             
         #EIGHT RANDOM LIGHTS
@@ -85,6 +90,7 @@ class Game:
             self.lights.append(Light(
                 name = "light " + str(i),
                 position = [random.uniform(a = -10, b = 10) for x in range(3)],
+                # color = []
                 color = [random.uniform(a = 0.5, b = 1) for x in range(3)]
             ))
 
@@ -98,25 +104,38 @@ class Game:
         (x,y) = pg.mouse.get_pos()
         theta_increment = self.frameTime * 0.05 * (320 - x)
         phi_increment = self.frameTime * 0.05 * (240 - y)
+        # print(theta_increment,phi_increment)
         self.player.increment_direction(theta_increment, phi_increment)
         pg.mouse.set_pos((320,240))
-
+        
         ### keyboard control ###
-
         keys = pg.key.get_pressed()
+        if keys[pg.K_g]:
+            self.player.isGravity = not self.player.isGravity
+            return
         if keys[pg.K_w]:
-            self.player.move(0, 0.0025*self.frameTime)
+            self.player.move(0, self.speedMultiplier*self.frameTime)
             return
         if keys[pg.K_a]:
-            self.player.move(90, 0.0025*self.frameTime)
+            self.player.move(90, self.speedMultiplier*self.frameTime)
             return
         if keys[pg.K_s]:
-            self.player.move(180, 0.0025*self.frameTime)
+            self.player.move(180, self.speedMultiplier*self.frameTime)
             return
         if keys[pg.K_d]:
-            self.player.move(-90, 0.0025*self.frameTime)
+            self.player.move(-90, self.speedMultiplier*self.frameTime)
             return
-
+        if keys[pg.K_LSHIFT]:
+            self.player.pull_down(self.speedMultiplier*self.frameTime)
+            return
+        if(not self.player.isGravity):
+            if keys[pg.K_SPACE]:
+                self.player.pull_up(self.speedMultiplier*self.frameTime)
+                return
+        else:
+            if keys[pg.K_SPACE]:
+                self.player.jump(self.speedMultiplier*self.frameTime)
+                return
         #Press c to put a crate where the player is
         if keys[pg.K_c]:
             if self.ckeydown == False:
@@ -137,7 +156,12 @@ class Game:
         else:
             self.ckeydown = False
             
-            
+
+        # Kiss me goodbye, I'm defying gravity
+        if(self.player.isGravity):
+            self.player.pull_down(self.speedMultiplier*self.frameTime)
+            return
+           
 
 
         ## Other stuff (add scene-object related things here) ###
@@ -148,6 +172,13 @@ class Game:
                 dtype=np.float32
             )
         
+
+        pass
+
+    # def physics(self):
+    #     # gravity
+    #     self.player.move
+
     #Don't change things after here unless you know what you're doing -Rob
 
     def mainInit(self):
@@ -155,6 +186,7 @@ class Game:
         self.currentTime = 0
         self.numFrames = 0
         self.frameTime = 0
+        self.speedMultiplier = 0.0025
         self.lightCount = 0
 
         self.gameObjects = []
@@ -164,7 +196,9 @@ class Game:
             position = [-10, 0, 0],
             eulers = [0, 0, 0]
         )
-        
+        self.physics = phy.physics(
+            position = [-10, 0, 0]
+        )
         self.camera = Camera(45,640/480,0.1,40)
         self.view = View(800,600)
 
@@ -206,7 +240,7 @@ class Game:
                     running = False
             #update objects, get controls
             self.update()
-
+            # self.physics()
             #refresh screen
             self.draw()
             self.showFrameRate()
@@ -395,7 +429,7 @@ class Game:
     def draw(self):
         #refresh screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
+        self.player.updateToArray() #convert vector3 to array
         view_transform = pyrr.matrix44.create_look_at(
             eye = self.player.position,
             target = self.player.position + self.player.get_forwards(),
@@ -544,14 +578,14 @@ class BuildingPart:
         
         self.gameObj = GameObject
         self.direction = direction
-        # self.theModel = theModel because we already have mesh and material in GameObjects for now
+        # self.theModel = mesh and material in GameObjects for now
         self.lights = []
         self.boxCollider = []
         self.respectiveNode = respectiveNode
 
     def addBuildingPart(self):
         
-        # adding what to place goes to the buildParts list 
+        # testing to add to gameObjs list
         self.gameObjs.append(GameObject(
             name = "cube ",
             position = [5,5,2],
@@ -560,9 +594,9 @@ class BuildingPart:
             mesh = self.gameMeshes[0], 
             material = self.gameMaterials[2] 
         ))
-
+        # testing to append corresponding BuildingPart
         self.buildParts.append(BuildingPart(
-            gameObj = self.gameObjs[0],    # <- provide index of buildingpart in buildPart 
+            gameObj = self.gameObjs[0],    
             direction = 2,
             lights = 2,
             boxCollider = 2,
@@ -579,23 +613,15 @@ class Tile:
         self.tileCoord = tileCoord
         self.neighbours = []
 
-    def addTile(self):
+        # testing to add corresponding tile to tiles list
         self.tiles.append(Tile(
                 buildPart = self.buildParts[0], 
                 worldCoord = [1,1,1],
                 tileCoord = 2,
                 neighbours = [2,2]
                 
-        )) # append the buildParts index? of neighbours in specific order
+        ))
 
-    #     self.gameObjects.append(Tile(
-    #         self.buildParts[0].gameObj,
-    #         2,
-    #         2,
-    #         neighbours[0]
-    #     ))
-
-    
 
     def placeTile(self):
         self.gameObjects.append(self.tiles[0].buildPart.gameObj)
