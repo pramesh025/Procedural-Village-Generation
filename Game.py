@@ -147,7 +147,7 @@ class Game:
                     mesh = self.gameMeshes[0], #Cube
                     material = self.gameMaterials[0] #
                 ))
-                self.createTransform(self.gameMeshes[0])
+                #self.createTransform(self.gameMeshes[0])
 
 
                 print("C key pressed!")
@@ -174,12 +174,15 @@ class Game:
 
         pass
 
+        self.autoCreateMeshTransforms()
+
     # def physics(self):
     #     # gravity
     #     self.player.move
 
-    #Don't change things after here unless you know what you're doing -Rob
 
+
+    #Don't change things after here unless you know what you're doing -Rob
     def mainInit(self):
         self.lastTime = 0
         self.currentTime = 0
@@ -369,6 +372,12 @@ class Game:
 
         pass
 
+    def autoCreateMeshTransforms(self):
+        for mesh in self.gameMeshes:
+            if mesh.transformsCreated == False:
+                self.createTransform(mesh)
+                mesh.transformsCreated = True
+
     def createTransform(self, mesh):           
         mesh.transforms = np.array([
             pyrr.matrix44.create_identity(dtype = np.float32)
@@ -545,6 +554,7 @@ class Mesh:
         self.assignedGameObjects = []
         self.transformVBO = None
         self.transform = None
+        self.transformsCreated = False
     
     def assignGameObject(self, gameObject):
         self.assignedGameObjects.append(gameObject)
