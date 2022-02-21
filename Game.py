@@ -9,6 +9,7 @@ import ObjMesh as obj
 import Player as pl
 from pygame import Vector3
 
+
 class Game:
     def __init__(self):
         #Place Game variables
@@ -40,12 +41,16 @@ class Game:
 
         self.gameMeshes.append(Mesh("models/cube.obj")) # 0
         self.gameMeshes.append(Mesh("models/testmodel1.obj")) # 1
+        # self.gameMeshes.append(Mesh("models/pillar1.obj")) # 2
 
         self.gameMaterials.append(Matt("crate", "png")) # 0
         self.gameMaterials.append(Matt("wood", "png")) # 1
         self.gameMaterials.append(Matt("white", "png")) # 2
-
         
+        BuildingPart.addBuildingPart(self)
+        # Tile.addTile(self)
+        # Tile.placeTile(self)
+
         #CREATING FLOATING SPINNING CRATES
         for i in range(10):
             self.gameObjects.append(GameObject(
@@ -54,19 +59,9 @@ class Game:
                 eulers = [random.uniform(a = 0, b = 360) for x in range(3)],
                 eulerVelocity = [random.uniform(a = -0.1, b = 0.1) for x in range(3)],
                 mesh = self.gameMeshes[0], #Cube
-                material = self.gameMaterials[0] #
+                material = self.gameMaterials[2] #
             ))
-
         
-        self.Tile.append(Tile(
-            direction = 1,
-            mesh = self.gameMeshes[0], #Cube
-            material = self.gameMaterials[0], #
-            position = [0,0,1],
-            # tileCoord = Vector3(0.0, 0.0, 0.0),
-            neighbor = np.array(Tile)
-        ))
-
         #CREATING ROOMS
 
         for i in range(10):
@@ -85,8 +80,6 @@ class Game:
                 color = [random.uniform(a = 0, b = 1) for x in range(3)]
             ))
             
-
-
         #EIGHT RANDOM LIGHTS
         for i in range(8):
             self.lights.append(Light(
@@ -95,8 +88,6 @@ class Game:
                 color = [random.uniform(a = 0.5, b = 1) for x in range(3)]
             ))
 
-        
-        
         pass
 
     def slowUpdate(self): #called every certain amount of time
@@ -149,7 +140,7 @@ class Game:
             
 
 
-        ### Other stuff (add scene-object related things here) ###
+        ## Other stuff (add scene-object related things here) ###
         for cube in self.gameObjects:
             cube.eulers = np.mod(
                 cube.eulers + cube.eulerVelocity, 
@@ -157,11 +148,6 @@ class Game:
                 dtype=np.float32
             )
         
-        
-        
-        pass
-
-
     #Don't change things after here unless you know what you're doing -Rob
 
     def mainInit(self):
@@ -172,6 +158,7 @@ class Game:
         self.lightCount = 0
 
         self.gameObjects = []
+        
         self.lights = []
         self.player = pl.Player(
             position = [-10, 0, 0],
@@ -184,7 +171,10 @@ class Game:
         self.gameMeshes = []
         self.gameMaterials = []
 
-        self.Tile = []
+        # self.gameObjs = []
+        self.buildParts = []
+        self.tiles = []
+        # self.Tile = []
         self.start()
 
         #initialise pygame
@@ -201,6 +191,8 @@ class Game:
         
 
         self.glStuffInit(self.camera, self.gameObjects)
+        # self.glStuffInit(self.camera, self.Tile)
+        
         # start main loop
         self.mainLoop()
         pass 
@@ -419,6 +411,9 @@ class Game:
         #lights
         glUniform1f(self.lightLocTextured["count"], min(8,max(0,len(self.lights))))
 
+        # for i in self.Tile:
+        #     glUniform3fv(Tile.position[i], 1, Tile.position)
+            
         for i, light in enumerate(self.lights):
             glUniform3fv(self.lightLocTextured["pos"][i], 1, light.position)
             glUniform3fv(self.lightLocTextured["color"][i], 1, light.color)
@@ -494,35 +489,6 @@ class GameObject:
             self.mesh.assignGameObject(self)
         self.material = material
         
-class Tile:
-    # to be placed in the world
-    def __init__(self, direction, mesh, material, position, neighbor):
-        self.direction = direction
-        self.mesh = mesh
-        self.material = material
-        self.position = np.array(position, dtype=np.float32)
-        # self.tileCoord = Vector3(0.0, 0.0, 0.0)
-        
-        self.neighbor = np.array(neighbor, dtype=Tile) # upto 6 EW NS UD 
-        # self.buildPart = BuildPart(
-            
-        # )
-    # def toTileCoord(self, worldCoord):
-    #     self.tileCoord = worldCoord*2
-    
-    # def toWorldCoord(self, tileCoord):
-    #     self.worldCoord = tileCoord/2
-    
-    def rotateTile(self, direction):
-        pass
-
-    # def putTile(self, worldCoord):
-    #     self.gameObjects.append(GameObject(
-    #         direction = 1,
-    #         worldCoord = Vector3(0.0, 0.0, 0.0),
-    #         tileCoord = Vector3(0.0, 0.0, 0.0),
-    #         neighbor = np.array(Tile)
-    #     ))
 
 class Light:
     def __init__(self, name, position, color):
@@ -573,3 +539,75 @@ class Matt:
     def loadNow(self):
         self.matmat = mat.Material(self.filename, self.filetype)
 
+class BuildingPart:
+    def __init__(self, gameObj, direction, lights, boxCollider, respectiveNode):
+        
+        self.gameObj = GameObject
+        self.direction = direction
+        # self.theModel = theModel because we already have mesh and material in GameObjects for now
+        self.lights = []
+        self.boxCollider = []
+        self.respectiveNode = respectiveNode
+
+    def addBuildingPart(self):
+        
+        # adding what to place goes to the buildParts list 
+        self.gameObjs.append(GameObject(
+            name = "cube ",
+            position = [5,5,2],
+            eulers = [1,0,0],
+            eulerVelocity = [0,0,0],
+            mesh = self.gameMeshes[0], 
+            material = self.gameMaterials[2] 
+        ))
+
+        self.buildParts.append(BuildingPart(
+            gameObj = self.gameObjs[0],    # <- provide index of buildingpart in buildPart 
+            direction = 2,
+            lights = 2,
+            boxCollider = 2,
+            respectiveNode = 2       
+        ))
+        
+        
+        
+class Tile:
+    # to be placed in the world
+    def __init__(self, buildPart, worldCoord, tileCoord, neighbours):
+        self.buildPart = BuildingPart
+        self.worldCoord = worldCoord
+        self.tileCoord = tileCoord
+        self.neighbours = []
+
+    def addTile(self):
+        self.tiles.append(Tile(
+                buildPart = self.buildParts[0], 
+                worldCoord = [1,1,1],
+                tileCoord = 2,
+                neighbours = [2,2]
+                
+        )) # append the buildParts index? of neighbours in specific order
+
+    #     self.gameObjects.append(Tile(
+    #         self.buildParts[0].gameObj,
+    #         2,
+    #         2,
+    #         neighbours[0]
+    #     ))
+
+    
+
+    def placeTile(self):
+        self.gameObjects.append(self.tiles[0].buildPart.gameObj)
+
+class TileBuffer: 
+    def __init__(self, buildPart, tileCoord, neighbours):
+            self.buildPart = BuildingPart
+            self.tileCoordinates = Vector3
+            self.neigbours = []
+
+    def instantiate(self, buildPart, position, orientation):
+        # should place the buildingPart in the world at worldCoord
+        pass
+
+    
