@@ -8,6 +8,8 @@ import Material as mat
 import ObjMesh as obj
 import Player as pl
 import Physics as phy
+from pygame import Vector3
+
 
 class Game:
     def __init__(self):
@@ -104,10 +106,12 @@ class Game:
         # print(theta_increment,phi_increment)
         self.player.increment_direction(theta_increment, phi_increment)
         pg.mouse.set_pos((320,240))
-
+        
         ### keyboard control ###
-
         keys = pg.key.get_pressed()
+        if keys[pg.K_g]:
+            self.player.isGravity = not self.player.isGravity
+            return
         if keys[pg.K_w]:
             self.player.move(0, self.speedMultiplier*self.frameTime)
             return
@@ -123,9 +127,14 @@ class Game:
         if keys[pg.K_LSHIFT]:
             self.player.pull_down(self.speedMultiplier*self.frameTime)
             return
-        if keys[pg.K_SPACE]:
-            self.player.pull_up(self.speedMultiplier*self.frameTime)
-            return
+        if(not self.player.isGravity):
+            if keys[pg.K_SPACE]:
+                self.player.pull_up(self.speedMultiplier*self.frameTime)
+                return
+        else:
+            if keys[pg.K_SPACE]:
+                self.player.jump(self.speedMultiplier*self.frameTime)
+                return
         #Press c to put a crate where the player is
         if keys[pg.K_c]:
             if self.ckeydown == False:
@@ -146,7 +155,12 @@ class Game:
         else:
             self.ckeydown = False
             
-            
+
+        # Kiss me goodbye, I'm defying gravity
+        if(self.player.isGravity):
+            self.player.pull_down(self.speedMultiplier*self.frameTime)
+            return
+           
 
 
         ### Other stuff (add scene-object related things here) ###
@@ -407,7 +421,7 @@ class Game:
     def draw(self):
         #refresh screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
+        self.player.updateToArray() #convert vector3 to array
         view_transform = pyrr.matrix44.create_look_at(
             eye = self.player.position,
             target = self.player.position + self.player.get_forwards(),
