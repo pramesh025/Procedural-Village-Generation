@@ -20,7 +20,6 @@ class Game:
         self.gravity = 9.8
 
         self.slowUpdateTime = 1
-        
 
         self.mainInit()
         pass
@@ -48,10 +47,6 @@ class Game:
         self.gameMaterials.append(Matt("crate", "png")) # 0
         self.gameMaterials.append(Matt("wood", "png")) # 1
         self.gameMaterials.append(Matt("white", "png")) # 2
-        
-        # BuildingPart.addBuildingPart(self)
-        # Tile.addTile(self)
-        # Tile.placeTile(self)
 
         #CREATING FLOATING SPINNING CRATES
         for i in range(10):
@@ -76,7 +71,7 @@ class Game:
                     mesh = self.gameMeshes[1], #Weird
                     material = self.gameMaterials[2] #white
                 ))
-                print(position)
+                
             self.lights.append(Light(
                 name = "light " + str(i),
                 position = [i*2, ii*2, 1],
@@ -169,7 +164,7 @@ class Game:
             cube.eulers = np.mod(
                 cube.eulers + cube.eulerVelocity, 
                 [360, 360, 360], 
-                dtype=np.float32
+                dtype = np.float32
             )
         
 
@@ -208,10 +203,10 @@ class Game:
         self.gameMeshes = []
         self.gameMaterials = []
 
-        # self.gameObjs = []
+        self.gameObjs = []
         self.buildParts = []
         self.tiles = []
-        # self.Tile = []
+     
         self.start()
 
         #initialise pygame
@@ -453,9 +448,6 @@ class Game:
         glUniform3fv(self.cameraLocTextured, 1, self.player.position)
         #lights
         glUniform1f(self.lightLocTextured["count"], min(8,max(0,len(self.lights))))
-
-        # for i in self.Tile:
-        #     glUniform3fv(Tile.position[i], 1, Tile.position)
             
         for i, light in enumerate(self.lights):
             glUniform3fv(self.lightLocTextured["pos"][i], 1, light.position)
@@ -515,10 +507,6 @@ class Game:
         glDeleteProgram(self.shaderTextured)
         glDeleteProgram(self.shaderColored)
         pg.quit()
-
-
-
-
 
 
 class GameObject:
@@ -583,67 +571,6 @@ class Matt:
     def loadNow(self):
         self.matmat = mat.Material(self.filename, self.filetype)
 
-class BuildingPart:
-    def __init__(self, gameObj, direction, lights, boxCollider, respectiveNode):
-        
-        self.gameObj = GameObject
-        self.direction = direction
-        # self.theModel = mesh and material in GameObjects for now
-        self.lights = []
-        self.boxCollider = []
-        self.respectiveNode = respectiveNode
 
-    def addBuildingPart(self):
-        
-        # testing to add to gameObjs list
-        self.gameObjs.append(GameObject(
-            name = "cube ",
-            position = [5,5,2],
-            eulers = [1,0,0],
-            eulerVelocity = [0,0,0],
-            mesh = self.gameMeshes[0], 
-            material = self.gameMaterials[2] 
-        ))
-        # testing to append corresponding BuildingPart
-        self.buildParts.append(BuildingPart(
-            gameObj = self.gameObjs[0],    
-            direction = 2,
-            lights = 2,
-            boxCollider = 2,
-            respectiveNode = 2       
-        ))
         
         
-        
-class Tile:
-    # to be placed in the world
-    def __init__(self, buildPart, worldCoord, tileCoord, neighbours):
-        self.buildPart = BuildingPart
-        self.worldCoord = worldCoord
-        self.tileCoord = tileCoord
-        self.neighbours = []
-
-        # testing to add corresponding tile to tiles list
-        self.tiles.append(Tile(
-                buildPart = self.buildParts[0], 
-                worldCoord = [1,1,1],
-                tileCoord = 2,
-                neighbours = [2,2]
-                
-        ))
-
-
-    def placeTile(self):
-        self.gameObjects.append(self.tiles[0].buildPart.gameObj)
-
-class TileBuffer: 
-    def __init__(self, buildPart, tileCoord, neighbours):
-            self.buildPart = BuildingPart
-            self.tileCoordinates = Vector3
-            self.neigbours = []
-
-    def instantiate(self, buildPart, position, orientation):
-        # should place the buildingPart in the world at worldCoord
-        pass
-
-    
