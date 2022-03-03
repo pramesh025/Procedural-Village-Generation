@@ -1,3 +1,4 @@
+from turtle import position
 import pygame as pg
 from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram,compileShader
@@ -22,7 +23,6 @@ class Game:
         self.gravity = 5
         self.speed = 0.005
         self.slowUpdateTime = 1
-        
 
         self.mainInit()
         pass
@@ -60,7 +60,7 @@ class Game:
                 eulers = [random.uniform(a = 0, b = 360) for x in range(3)],
                 eulerVelocity = [random.uniform(a = -0.1, b = 0.1) for x in range(3)],
                 mesh = self.gameMeshes[0], #Cube
-                material = self.gameMaterials[0] #
+                material = self.gameMaterials[2] #
             ))
 
         """
@@ -97,8 +97,6 @@ class Game:
                 color = [random.uniform(a = 0.5, b = 1) for x in range(3)]
             ))
 
-        
-        
         pass
 
     def slowUpdate(self): #called every certain amount of time
@@ -192,12 +190,12 @@ class Game:
            
 
 
-        ### Other stuff (add scene-object related things here) ###
+        ## Other stuff (add scene-object related things here) ###
         for cube in self.gameObjects:
             cube.eulers = np.mod(
                 cube.eulers + cube.eulerVelocity, 
                 [360, 360, 360], 
-                dtype=np.float32
+                dtype = np.float32
             )
         
 
@@ -221,6 +219,7 @@ class Game:
         self.lightCount = 0
 
         self.gameObjects = []
+        
         self.lights = []
         self.player = pl.Player(
             position = [0, 1, 1],
@@ -235,6 +234,10 @@ class Game:
         self.gameMeshes = []
         self.gameMaterials = []
 
+        self.gameObjs = []
+        self.buildParts = []
+        self.tiles = []
+     
         self.start()
 
         #initialise pygame
@@ -251,6 +254,8 @@ class Game:
         
 
         self.glStuffInit(self.camera, self.gameObjects)
+        # self.glStuffInit(self.camera, self.Tile)
+        
         # start main loop
         self.mainLoop()
         pass 
@@ -475,7 +480,7 @@ class Game:
         glUniform3fv(self.cameraLocTextured, 1, self.player.position)
         #lights
         glUniform1f(self.lightLocTextured["count"], min(8,max(0,len(self.lights))))
-
+            
         for i, light in enumerate(self.lights):
             glUniform3fv(self.lightLocTextured["pos"][i], 1, light.position)
             glUniform3fv(self.lightLocTextured["color"][i], 1, light.color)
@@ -554,6 +559,7 @@ class GameObject:
         self.material = material
 """
         
+
 class Light:
     def __init__(self, name, position, color):
         self.name = name
