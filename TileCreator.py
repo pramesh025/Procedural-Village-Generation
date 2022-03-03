@@ -46,9 +46,10 @@ class BuildingPartList:
     pass
 
 class Tile:
-    def __init__(self, tilecreator, buildingpart, position = Vector3(0,0,0)) -> None:
+    def __init__(self, tilecreator, node, position = Vector3(0,0,0)) -> None:
         self.position = position
-        self.buildingpart = buildingpart
+        self.zenode = node
+        self.buildingpart = node.buildingpart
         self.gameObject = None
         tilecreator.tilelist.append(self)
         self.neighbours = [None,None,None,None]
@@ -80,6 +81,7 @@ class TileCreator:
         self.tilelist = []
         self.edgetiles = []
         self.buffertiles = []
+        self.edgebuffers = []
 
         pass
 
@@ -92,6 +94,11 @@ class TileCreator:
         firsttile.placeTile()
 
         pass
+
+    def iterateTileCreation(self, playerPos):
+
+        pass
+
 
     def createBuffers(self, playerPos):
         currentPos = Vector3(int(playerPos.x), int(playerPos.y, 0))

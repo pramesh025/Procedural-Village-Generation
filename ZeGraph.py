@@ -1,6 +1,6 @@
 class ZeNode:
-    def __init__(self) -> None:
-        
+    def __init__(self, buildingpart) -> None:
+        self.buildingpart = buildingpart
         pass
     pass
 
