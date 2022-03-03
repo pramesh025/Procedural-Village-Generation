@@ -1,4 +1,4 @@
-import main
+
 import numpy as np
 import pygame as pg
 
@@ -26,8 +26,7 @@ class GameObject:
     
     def setMesh(self, mesh):
         self.mesh = mesh
-        if self.mesh != None:
-            self.mesh.assignGameObject(self)
+        
 
     def setMaterial(self, material):
         self.material = material
@@ -39,21 +38,30 @@ class GameObject:
         self.children.append(childGameObject)
 
 
-    def placeGameObject(self):
-        main.game.gameObjects.append(self)
+    def placeGameObject(self, gameObjects):
+        if(self.parent == None):
+            gameObjects.append(self)
+
+        if self.mesh != None:
+            self.mesh.assignGameObject(self)
+
         self.mesh.transformsCreated = False
         for child in self.children:
             child.placeGameObject()
         pass
 
-    def unplaceGameObject(self):
+    def unplaceGameObject(self, gameObjects):
         for child in self.children:
             child.unplaceGameObject()
         self.mesh.transformscreated = False
-        main.game.gameObjects.remove(self)
+        if self.mesh != None:
+            self.mesh.unassignGameObject(self)
+        if(self.parent == None):
+            gameObjects.remove(self)
+        del self
         pass
 
-
+"""
 class BuildingPartGameObjectList:
     #self.gameMeshes.append(Mesh("models/floorwood0.obj")) #WOOD FLOOR LEVEL 0 # 0
     #self.gameMeshes.append(Mesh("models/floorwoodL.obj")) #WOOD FLOOR L       # 1
@@ -113,4 +121,4 @@ class BuildingPartGameObjectList:
 
 
 
-    pass
+    pass"""

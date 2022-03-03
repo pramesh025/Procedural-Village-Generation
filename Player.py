@@ -1,17 +1,21 @@
 
 from OpenGL.GL import *
 import numpy as np
+import pygame as pg
 from pygame import Vector3
 
 
 class Player:
     def __init__(self, position, eulers):
-        self.position = Vector3(position)
+        self.position = np.array(position,dtype=np.float32)
+        self.vposition = Vector3(position)
+        self.up = Vector3(0,0,1)
+        self.forward = Vector3(1,0,0)
         self.eulers = Vector3(eulers)
         self.moveSpeed = 1
-        self.global_up = Vector3(0, 0, 1)
         self.isGravity = True
         self.gravity = Vector3(0, 0, -2.5)
+        self.displacement = Vector3(0,0,0)
     
     def setProperties(self, position, eulers):
         self.position = Vector3(position)
@@ -20,35 +24,62 @@ class Player:
         self.global_up = Vector3(0, 0, 1)
         self.isGravity = True
 
-    def rotate(self, vector, angle):
+    def update(self):
+        
+
+        
         pass
 
+    def translate(self, translationVector):
+        self.vposition += translationVector
+        #self.position = np.array(self.vposition,dtype=np.float32)
+        
+    def moveForward(self, amount):
+        self.vposition += self.forward * amount
+        #self.position = np.array(self.vposition,dtype=np.float32)
 
-    def move(self, direction, amount):
+    def moveRight(self, amount):
+        self.vposition += self.forward.copy().cross(self.up) * amount
+        #self.position = np.array(self.vposition,dtype=np.float32)
+
+    def moveLeft(self, amount):
+        self.vposition += - self.forward.copy().cross(self.up) * amount
+        #self.position = np.array(self.vposition,dtype=np.float32)
+
+    def moveBack(self, amount):
+        self.vposition += - self.forward * amount
+       # self.position = np.array(self.vposition,dtype=np.float32)
+
+    def jump(self, amount):
+        self.displacement = Vector3(0,0,amount)
+
+    """def move(self, direction, amount):
         walkDirection = (direction + self.eulers[1]) % 360
         self.position[0] += amount * self.moveSpeed * np.cos(np.radians(walkDirection),dtype=np.float32)
         self.position[1] += amount * self.moveSpeed * np.sin(np.radians(walkDirection),dtype=np.float32)
         if(self.isGravity):
-            self.pull_down(amount)
+            self.pull_down(amount)"""
 
     def increment_direction(self, theta_increase, phi_increase):
         self.eulers[1] = (self.eulers[1] + theta_increase) % 360
         self.eulers[0] = min(max(self.eulers[0] + phi_increase,-89),89)
+        direction = (self.eulers[1]) % 360
+        self.forward = Vector3(np.cos(np.radians(direction),dtype=np.float32),np.sin(np.radians(direction),dtype=np.float32),0)
 
-    def pull_down(self,amount):
+    """def pull_down(self,amount):
         if(self.position[2] > -0.1):
-            print(self.position)
+           # print(self.position)
             self.position[2] += amount*self.gravity[2]
     
     def pull_up(self,amount):
         if(self.position[2] < 13):
-            print(self.position)
+            #print(self.position)
             self.position[2] += amount*1
     
     def jump(self,amount):
         self.position[2] += amount*1
         return
-
+"""
     def get_forwards(self):
 
         return np.array(

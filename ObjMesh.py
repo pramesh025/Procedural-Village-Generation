@@ -56,6 +56,8 @@ class ObjMesh:
                 if flag=="v":
                     #vertex
                     line = line.replace("v ","")
+                    if line[0] == " ":
+                        line = line[1:]
                     line = line.split(" ")
                     l = [float(x) for x in line]
                     v.append(l)
@@ -75,6 +77,8 @@ class ObjMesh:
                     #face, three or more vertices in v/vt/vn form
                     line = line.replace("f ","")
                     line = line.replace("\n","")
+                    if line[-1] == " ":
+                        line = line[:-1]
                     #get the individual vertices for each line
                     line = line.split(" ")
                     faceVertices = []

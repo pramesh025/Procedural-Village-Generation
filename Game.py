@@ -8,7 +8,10 @@ import Material as mat
 import ObjMesh as obj
 import Player as pl
 import Physics as phy
+import TileCreator
+import GameObject as go
 from pygame import Vector3
+
 
 
 class Game:
@@ -16,8 +19,8 @@ class Game:
         #Place Game variables
 
         self.renderDistance = 10
-        self.gravity = 9.8
-
+        self.gravity = 5
+        self.speed = 0.005
         self.slowUpdateTime = 1
         
 
@@ -32,24 +35,25 @@ class Game:
         #  player
         ####   end of variable list
         self.ckeydown = False
+        self.spkeydown = False
 
         self.view.setProperties(800,600)
         self.camera.setProperties(45,800/600,0.1,40)
         self.player.setProperties(position = [5, 5, 1], eulers = [0, 0, 0])
 
-        #self.gameMeshes["CubeMesh"] = Mesh("models/cube.obj")
-        #self.gameMaterials["CrateMat"] = Matt("crate", "png")
 
-        self.gameMeshes.append(Mesh("models/cube.obj")) # 0
+        self.gameMeshes.append(Mesh("models/3dstestsobj2.obj")) # 0
         self.gameMeshes.append(Mesh("models/testmodel1.obj")) # 1
+        self.gameMeshes.append(Mesh("models/Triangulated/wallwindow.obj")) # 2
+        self.gameMeshes.append(Mesh("models/Triangulated/woodfloor.obj")) # 3
 
-        self.gameMaterials.append(Matt("crate", "png")) # 0
+        self.gameMaterials.append(Matt("wall", "png")) # 0
         self.gameMaterials.append(Matt("wood", "png")) # 1
         self.gameMaterials.append(Matt("white", "png")) # 2
-
+        self.gameMaterials.append(Matt("crate", "png")) # 3
         
         #CREATING FLOATING SPINNING CRATES
-        for i in range(10):
+        """for i in range(1):
             self.gameObjects.append(GameObject(
                 name = "cube " + str(i),
                 position = [random.uniform(a = -5, b = 5), random.uniform(a = -5, b = 5), 5 ],
@@ -59,19 +63,21 @@ class Game:
                 material = self.gameMaterials[0] #
             ))
 
-        
+        """
         #CREATING ROOMS
         
         for i in range(10):
-            for ii in range(5):
-                self.gameObjects.append(GameObject(
+            for ii in range(10):
+                tetete = go.GameObject(
                     name = "weird " + str(i),
-                    position = [i*2, ii*2, 0],
-                    eulers = [-90,0,random.randint(0,3) * 90],
+                    position = [i, ii, 0],
+                    eulers = [-0,random.randint(0,3) * 90,0],
                     eulerVelocity = [0,0,0],
-                    mesh = self.gameMeshes[1], #Weird
-                    material = self.gameMaterials[2] #white
-                ))
+                    mesh = self.gameMeshes[3], #Weird
+                    material = self.gameMaterials[3] #white
+                )
+                tetete.placeGameObject(self.gameObjects)
+
             self.lights.append(Light(
                 name = "light " + str(i),
                 position = [i*2, ii*2, 1],
@@ -79,7 +85,7 @@ class Game:
 
                 # color = [random.uniform(a = 0, b = 1) for x in range(3)]
             ))
-            
+        
 
 
         #EIGHT RANDOM LIGHTS
@@ -98,7 +104,7 @@ class Game:
     def slowUpdate(self): #called every certain amount of time
         pass
 
-    def update(self): #Is called every frame
+    def inputUpdate(self):
         ### mouse control ##
         (x,y) = pg.mouse.get_pos()
         theta_increment = self.frameTime * 0.05 * (320 - x)
@@ -112,53 +118,76 @@ class Game:
         if keys[pg.K_g]:
             self.player.isGravity = not self.player.isGravity
             return
-        if keys[pg.K_w]:
-            self.player.move(0, self.speedMultiplier*self.frameTime)
-            return
-        if keys[pg.K_a]:
-            self.player.move(90, self.speedMultiplier*self.frameTime)
-            return
-        if keys[pg.K_s]:
-            self.player.move(180, self.speedMultiplier*self.frameTime)
-            return
-        if keys[pg.K_d]:
-            self.player.move(-90, self.speedMultiplier*self.frameTime)
-            return
-        if keys[pg.K_LSHIFT]:
-            self.player.pull_down(self.speedMultiplier*self.frameTime)
-            return
-        if(not self.player.isGravity):
-            if keys[pg.K_SPACE]:
-                self.player.pull_up(self.speedMultiplier*self.frameTime)
-                return
+
+        if keys[pg.K_SPACE]:
+            if self.spkeydown == False:
+                self.player.jump(0.3)
+                self.spkeydown = True
         else:
-            if keys[pg.K_SPACE]:
-                self.player.jump(self.speedMultiplier*self.frameTime)
-                return
-        #Press c to put a crate where the player is
+            self.spkeydown = False
+        pass
+        if keys[pg.K_UP] or keys[pg.K_w] or keys[pg.K_COMMA]:
+            self.player.moveForward(self.speed*self.frameTime)
+            return
+        if keys[pg.K_RIGHT]:
+            self.player.moveRight(self.speed*self.frameTime)
+            return
+        if keys[pg.K_LEFT]:
+            self.player.moveLeft(self.speed*self.frameTime)
+            return
+        if keys[pg.K_DOWN]:
+            self.player.moveBack(self.speed*self.frameTime)
+            return
+        #if keys[pg.K_LSHIFT]:
+        #    self.player.pull_down(self.speedMultiplier*self.frameTime)
+        #    return
+        #if(not self.player.isGravity):
+        #    if keys[pg.K_SPACE]:
+        #       self.player.pull_up(self.speedMultiplier*self.frameTime)
+        #       return
+
+        
+
         if keys[pg.K_c]:
             if self.ckeydown == False:
                 #doo thu stuff
-                self.gameObjects.append(GameObject(
+                tete = go.GameObject(
                     name = "cube extra",
                     position = self.player.position,
-                    eulers = [random.uniform(a = 0, b = 360) for x in range(3)],
-                    eulerVelocity = [random.uniform(a = -0.1, b = 0.1) for x in range(3)],
-                    mesh = self.gameMeshes[0], #Cube
+                    mesh = self.gameMeshes[1], #Cube
                     material = self.gameMaterials[0] #
-                ))
+                )
+                tete.placeGameObject(self.gameObjects)
                 #self.createTransform(self.gameMeshes[0])
-
 
                 print("C key pressed!")
                 self.ckeydown = True
         else:
             self.ckeydown = False
-            
+        pass
+
+    def update(self): #Is called every frame
+        ####
+        if(self.player.vposition.z > 0.5):
+            self.player.displacement += Vector3(0,0,-0.0001*self.gravity*self.frameTime)
+        else:
+            if(self.player.displacement.z < 0):
+                self.player.displacement.z = 0
+                self.player.vposition.z = 0.5
+            pass
+            #self.player.displacement = Vector3(0,0,0)
+            #self.player.vposition.z = 0.5
+
+        self.player.translate(self.player.displacement)         
+        print(self.player.vposition)                           
+        self.player.position = np.array(self.player.vposition,dtype=np.float32)
+        ####
+        
+        self.autoCreateMeshTransforms()
 
         # Kiss me goodbye, I'm defying gravity
         if(self.player.isGravity):
-            self.player.pull_down(self.speedMultiplier*self.frameTime)
+            #self.player.pull_down(self.speedMultiplier*self.frameTime)
             return
            
 
@@ -174,7 +203,7 @@ class Game:
 
         pass
 
-        self.autoCreateMeshTransforms()
+        
 
     # def physics(self):
     #     # gravity
@@ -194,7 +223,7 @@ class Game:
         self.gameObjects = []
         self.lights = []
         self.player = pl.Player(
-            position = [-10, 0, 0],
+            position = [0, 1, 1],
             eulers = [0, 0, 0]
         )
         self.physics = phy.physics(
@@ -234,9 +263,11 @@ class Game:
                 if (event.type == pg.KEYDOWN and event.key==pg.K_ESCAPE):
                     running = False
             #update objects, get controls
+            self.inputUpdate()
             self.update()
             # self.physics()
             #refresh screen
+            #print(self.currentTime)
             self.draw()
             self.showFrameRate()
         self.quit()
@@ -430,7 +461,6 @@ class Game:
     def draw(self):
         #refresh screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        self.player.updateToArray() #convert vector3 to array
         view_transform = pyrr.matrix44.create_look_at(
             eye = self.player.position,
             target = self.player.position + self.player.get_forwards(),
@@ -453,41 +483,43 @@ class Game:
         
 
         for mesh in self.gameMeshes:
-            for i, mgameObject in enumerate(mesh.assignedGameObjects):
-                model_transform = pyrr.matrix44.create_identity(dtype=np.float32)
-                model_transform = pyrr.matrix44.multiply(
-                    m1=model_transform, 
-                    m2=pyrr.matrix44.create_from_eulers(
-                        eulers=np.radians(mgameObject.eulers), dtype=np.float32
+            if(len(mesh.assignedGameObjects) > 0):
+                for i, mgameObject in enumerate(mesh.assignedGameObjects):
+                    model_transform = pyrr.matrix44.create_identity(dtype=np.float32)
+                    model_transform = pyrr.matrix44.multiply(
+                        m1=model_transform, 
+                        m2=pyrr.matrix44.create_from_eulers(
+                            eulers=np.radians(mgameObject.eulers), dtype=np.float32
+                        )
                     )
-                )
-                model_transform = pyrr.matrix44.multiply(
-                    m1=model_transform, 
-                    m2=pyrr.matrix44.create_from_translation(
-                        vec=np.array(mgameObject.position),dtype=np.float32
+                    model_transform = pyrr.matrix44.multiply(
+                        m1=model_transform, 
+                        m2=pyrr.matrix44.create_from_translation(
+                            vec=np.array(mgameObject.position),dtype=np.float32
+                        )
                     )
+                    mesh.transforms[i] = model_transform
+            
+                glBindVertexArray(mesh.objmesh.vao)
+                glBindBuffer(
+                    GL_ARRAY_BUFFER, 
+                    mesh.transformVBO
                 )
-                mesh.transforms[i] = model_transform
-        
-            glBindVertexArray(mesh.objmesh.vao)
-            glBindBuffer(
-                GL_ARRAY_BUFFER, 
-                mesh.transformVBO
-            )
-            glBufferData(GL_ARRAY_BUFFER, mesh.transforms.nbytes, mesh.transforms, GL_STATIC_DRAW)
+                glBufferData(GL_ARRAY_BUFFER, mesh.transforms.nbytes, mesh.transforms, GL_STATIC_DRAW)
 
 
         #self.gameMaterials[0].matmat.use()
         
         for mesh in self.gameMeshes:
-            mesh.assignedGameObjects[0].material.matmat.use()
-            glDisable(GL_CULL_FACE)
-            glBindVertexArray(mesh.objmesh.vao)
-            glBindBuffer(
-                GL_ARRAY_BUFFER, 
-                mesh.transformVBO
-            )
-            glDrawArraysInstanced(GL_TRIANGLES, 0, mesh.objmesh.vertex_count, len(mesh.assignedGameObjects))
+            if(len(mesh.assignedGameObjects) > 0):
+                mesh.assignedGameObjects[0].material.matmat.use()
+                glDisable(GL_CULL_FACE)
+                glBindVertexArray(mesh.objmesh.vao)
+                glBindBuffer(
+                    GL_ARRAY_BUFFER, 
+                    mesh.transformVBO
+                )
+                glDrawArraysInstanced(GL_TRIANGLES, 0, mesh.objmesh.vertex_count, len(mesh.assignedGameObjects))
 
 
         #glDrawArraysInstanced(GL_TRIANGLES, 0, self.cube_mesh.vertex_count, len(scene.cubes))
@@ -509,7 +541,7 @@ class Game:
 
 
 
-
+"""
 class GameObject:
     def __init__(self, name, position, eulers, eulerVelocity, mesh, material):
         self.name = name
@@ -520,6 +552,7 @@ class GameObject:
         if(self.mesh != None):
             self.mesh.assignGameObject(self)
         self.material = material
+"""
         
 class Light:
     def __init__(self, name, position, color):
@@ -559,6 +592,10 @@ class Mesh:
     def assignGameObject(self, gameObject):
         self.assignedGameObjects.append(gameObject)
 
+    def unassignGameObject(self, gameObject):
+        if(gameObject in self.assignedGameObjects):
+            self.assignedGameObjects.remove(gameObject)
+
     def loadNow(self):
         self.objmesh = obj.ObjMesh(self.filename)
 
@@ -571,3 +608,4 @@ class Matt:
     def loadNow(self):
         self.matmat = mat.Material(self.filename, self.filetype)
 
+game = Game()
