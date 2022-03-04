@@ -40,9 +40,12 @@ class Game:
         self.ckeydown = False
         self.spkeydown = False
 
-        self.view.setProperties(800,600)
-        self.camera.setProperties(45,800/600,0.1,40)
+        self.view.setProperties(640,480)
+        self.camera.setProperties(45,640/480,0.1,40)
         self.player.setProperties(position = [5, 5, 1], eulers = [0, 0, 0])
+
+        self.ppx = 320
+        self.ppy = 240
 
 
         """self.gameMeshes.append(Mesh("models/3dstestsobj2.obj")) # 0
@@ -139,12 +142,13 @@ class Game:
 
     def mouseInputUpdate(self):
         ### mouse control ##
+
         (x,y) = pg.mouse.get_pos()
         theta_increment = self.frameTime * 0.05 * (320 - x)
         phi_increment = self.frameTime * 0.05 * (240 - y)
-        # print(theta_increment,phi_increment)
         self.player.increment_direction(theta_increment, phi_increment)
         pg.mouse.set_pos((320,240))
+        
         pass
 
 
@@ -221,7 +225,6 @@ class Game:
         ####
         
         self.autoCreateMeshTransforms()
-
         pass
 
         
@@ -266,6 +269,7 @@ class Game:
         pg.display.set_mode((self.view.hres,self.view.vres), pg.OPENGL|pg.DOUBLEBUF)
         pg.mouse.set_pos((int(self.view.hres/2),int(self.view.vres/2)))
         pg.mouse.set_visible(False)
+        pg.event.set_grab(True)
 
         #self.engine = Engine(self.scene)
         
@@ -285,14 +289,18 @@ class Game:
                 if (event.type == pg.KEYDOWN and event.key==pg.K_ESCAPE):
                     running = False
             #update objects, get controls
-            self.showFrameRate()
+
+
+            
             self.mouseInputUpdate()
             self.inputUpdate()
             self.update()
             # self.physics()
             #refresh screen
             #print(self.currentTime)
+            self.showFrameRate()
             self.draw()
+            
             
         self.quit()
         pass
@@ -301,6 +309,8 @@ class Game:
         self.currentTime = pg.time.get_ticks()
         delta = self.currentTime - self.lastTime
         if (delta >= 1000):
+
+
             framerate = int(1000.0 * self.numFrames/delta)
             pg.display.set_caption(f"Running at {framerate} fps.")
             self.lastTime = self.currentTime
@@ -308,7 +318,7 @@ class Game:
             if(framerate != 0):
                 self.frameTime = float(1000.0 / framerate)
             else:
-                self.frateTime = float(1000.0/1)
+                self.frateTime = 10000
         self.numFrames += 1
     
     def glStuffInit(self, icamera):
@@ -485,6 +495,9 @@ class Game:
     def draw(self):
         #refresh screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        
+
         view_transform = pyrr.matrix44.create_look_at(
             eye = self.player.position,
             target = self.player.position + self.player.get_forwards(),

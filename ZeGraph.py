@@ -52,6 +52,14 @@ class ZeGraph: #SINGLETON
                     mesh = self.gm[0], #FLOOR
                     material = self.gmm[0] #WOOD
                 )
+        tete.setChild(go.GameObject(
+            name = "wall",
+            position = [0,0,0],
+            eulers = [0,0,0],
+            mesh = self.gm[3], #WALL
+            material = self.gmm[1] #WINDOW
+        ))
+
         return tete
 
 

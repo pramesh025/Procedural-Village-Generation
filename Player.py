@@ -53,34 +53,14 @@ class Player:
     def jump(self, amount):
         self.displacement = Vector3(0,0,amount)
 
-    """def move(self, direction, amount):
-        walkDirection = (direction + self.eulers[1]) % 360
-        self.position[0] += amount * self.moveSpeed * np.cos(np.radians(walkDirection),dtype=np.float32)
-        self.position[1] += amount * self.moveSpeed * np.sin(np.radians(walkDirection),dtype=np.float32)
-        if(self.isGravity):
-            self.pull_down(amount)"""
-
     def increment_direction(self, theta_increase, phi_increase):
         self.eulers[1] = (self.eulers[1] + theta_increase) % 360
         self.eulers[0] = min(max(self.eulers[0] + phi_increase,-89),89)
         direction = (self.eulers[1]) % 360
         self.forward = Vector3(np.cos(np.radians(direction),dtype=np.float32),np.sin(np.radians(direction),dtype=np.float32),0)
 
-    """def pull_down(self,amount):
-        if(self.position[2] > -0.1):
-           # print(self.position)
-            self.position[2] += amount*self.gravity[2]
-    
-    def pull_up(self,amount):
-        if(self.position[2] < 13):
-            #print(self.position)
-            self.position[2] += amount*1
-    
-    def jump(self,amount):
-        self.position[2] += amount*1
-        return
-"""
     def get_forwards(self):
+        #return np.array([self.forward.x,self.forward.y,self.forward.z])
 
         return np.array(
             [
