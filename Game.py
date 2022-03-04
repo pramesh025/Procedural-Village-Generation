@@ -209,12 +209,12 @@ class Game:
 
     def update(self): #Is called every frame
         ####
-        if(self.player.vposition.z > 2):
+        if(self.player.vposition.z > 1.5):
             self.player.displacement += Vector3(0,0,-0.0001*self.gravity*self.frameTime)
         else:
             if(self.player.displacement.z < 0):
                 self.player.displacement.z = 0
-                self.player.vposition.z = 2
+                self.player.vposition.z = 1.5
             pass
             #self.player.displacement = Vector3(0,0,0)
             #self.player.vposition.z = 0.5
@@ -246,7 +246,7 @@ class Game:
         
         self.lights = []
         self.player = pl.Player(
-            position = [0, 1, 1],
+            position = [0, 1.5, 1],
             eulers = [0, 0, 0]
         )
         self.physics = phy.physics(
@@ -323,7 +323,7 @@ class Game:
     
     def glStuffInit(self, icamera):
          #initialise opengl
-        glClearColor(0.1, 0.1, 0.1, 1)
+        glClearColor(0.1, 0.2, 0.3, 1)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)
@@ -516,7 +516,7 @@ class Game:
         for i, light in enumerate(self.lights):
             glUniform3fv(self.lightLocTextured["pos"][i], 1, light.position)
             glUniform3fv(self.lightLocTextured["color"][i], 1, light.color)
-            glUniform1f(self.lightLocTextured["strength"][i], 1)
+            glUniform1f(self.lightLocTextured["strength"][i], 2)
         
 
         for mesh in self.gameMeshes:

@@ -49,6 +49,19 @@ class TileCreator: #SINGLETON
     def createInitial(self, playerPos):
         firsttile = Tile(tilecreator = self, node = self.zeGraph.nodes[0], #playground
             position=Vector3(int(playerPos.x), int(playerPos.y), 0))
+        
+        ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[1],
+            position=Vector3(int(playerPos.x)+1, int(playerPos.y), 0))
+        ttile.placeTile()
+        ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[2],
+            position=Vector3(int(playerPos.x)+2, int(playerPos.y), 0))
+        ttile.placeTile()
+        ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[3],
+            position=Vector3(int(playerPos.x)+3, int(playerPos.y), 0))
+        ttile.placeTile()
+        ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[4],
+            position=Vector3(int(playerPos.x)+4, int(playerPos.y), 0))
+        ttile.placeTile()
 
         self.tilelist.append(firsttile)
         self.edgetiles.append(firsttile)
