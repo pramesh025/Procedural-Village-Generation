@@ -38,10 +38,7 @@ class GameObject:
         self.children.append(childGameObject)
 
 
-    def placeGameObject(self, gameObjects):
-        if(self.parent == None):
-            gameObjects.append(self)
-
+    def placeGameObject(self):
         if self.mesh != None:
             self.mesh.assignGameObject(self)
 
@@ -50,14 +47,12 @@ class GameObject:
             child.placeGameObject()
         pass
 
-    def unplaceGameObject(self, gameObjects):
+    def unplaceGameObject(self):
         for child in self.children:
             child.unplaceGameObject()
         self.mesh.transformscreated = False
         if self.mesh != None:
             self.mesh.unassignGameObject(self)
-        if(self.parent == None):
-            gameObjects.remove(self)
         del self
         pass
 

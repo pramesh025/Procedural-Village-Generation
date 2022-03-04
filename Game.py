@@ -34,6 +34,9 @@ class Game:
         #  lights = [8 lights]
         #  player
         ####   end of variable list
+        self.tilecreator = TileCreator.TileCreator(self.gameMeshes, self.gameMaterials)
+
+
         self.ckeydown = False
         self.spkeydown = False
 
@@ -42,7 +45,7 @@ class Game:
         self.player.setProperties(position = [5, 5, 1], eulers = [0, 0, 0])
 
 
-        self.gameMeshes.append(Mesh("models/3dstestsobj2.obj")) # 0
+        """self.gameMeshes.append(Mesh("models/3dstestsobj2.obj")) # 0
         self.gameMeshes.append(Mesh("models/testmodel1.obj")) # 1
         self.gameMeshes.append(Mesh("models/Triangulated/wallwindow.obj")) # 2
         self.gameMeshes.append(Mesh("models/Triangulated/woodfloor.obj")) # 3
@@ -50,7 +53,38 @@ class Game:
         self.gameMaterials.append(Matt("wall", "png")) # 0
         self.gameMaterials.append(Matt("wood", "png")) # 1
         self.gameMaterials.append(Matt("white", "png")) # 2
-        self.gameMaterials.append(Matt("crate", "png")) # 3
+        self.gameMaterials.append(Matt("crate", "png")) # 3"""
+
+        #COLLECT MESHES
+        self.gameMeshes.append(Mesh("models/Triangulated/woodfloor.obj"))  #WOOD FLOOR LEVEL 0 # 0
+        self.gameMeshes.append(Mesh("models/Triangulated/woodfloorL.obj")) #WOOD FLOOR L       # 1
+        self.gameMeshes.append(Mesh("models/Triangulated/woodfloorI.obj")) #WOOD FLOOR I       # 2
+        self.gameMeshes.append(Mesh("models/Triangulated/wallblank.obj"))  #BLANK WALL         # 3
+        self.gameMeshes.append(Mesh("models/Triangulated/wallwindow.obj")) #1 WALL WITH WINDOW # 4
+        self.gameMeshes.append(Mesh("models/Triangulated/window.obj"))     #WINDOW             # 5
+        self.gameMeshes.append(Mesh("models/Triangulated/walldoorR.obj"))  #RIGHT DOOR         # 6
+        self.gameMeshes.append(Mesh("models/Triangulated/walldoorL.obj"))  #LEFT DOOR          # 7
+        self.gameMeshes.append(Mesh("models/Triangulated/door.obj"))       #DOOR               # 8
+        self.gameMeshes.append(Mesh("models/Triangulated/windowbars.obj")) #WINDOW BARS        # 9
+        self.gameMeshes.append(Mesh("models/Triangulated/doorbars.obj"))   #WINDOW BASE        # 10
+        self.gameMeshes.append(Mesh("models/Triangulated/post.obj"))       #POST               # 11
+        self.gameMeshes.append(Mesh("models/Triangulated/windowbase.obj")) #WINDOW BASE        # 12
+        self.gameMeshes.append(Mesh("models/Triangulated/lamp.obj"))       #LAMP               # 13
+
+
+        #COLLECT MATERIALS
+        self.gameMaterials.append(Matt("Floor", "png"))     #WOOD FLOOR       # 0
+        self.gameMaterials.append(Matt("Wall", "png"))      #STONE WALL       # 1
+        self.gameMaterials.append(Matt("Metal", "png"))     #SILVER METAL     # 2
+        self.gameMaterials.append(Matt("Door", "png"))      #WINDOW           # 3
+        self.gameMaterials.append(Matt("Door", "png"))      #DOOR             # 4
+        self.gameMaterials.append(Matt("Post", "png"))      #POST             # 5
+        self.gameMaterials.append(Matt("Lamp", "png"))      #LANTERN          # 6
+        self.gameMaterials.append(Matt("Sand", "png"))      #SAND             # 7
+        self.gameMaterials.append(Matt("Stone", "png"))     #STONE            # 8
+        self.gameMaterials.append(Matt("crate", "png"))     #TEST CRATE       # 9
+
+
         
         #CREATING FLOATING SPINNING CRATES
         """for i in range(1):
@@ -66,7 +100,7 @@ class Game:
         """
         #CREATING ROOMS
         
-        for i in range(10):
+        """for i in range(10):
             for ii in range(10):
                 tetete = go.GameObject(
                     name = "weird " + str(i),
@@ -84,8 +118,9 @@ class Game:
                 color = [0.5,0.5,0.5]
 
                 # color = [random.uniform(a = 0, b = 1) for x in range(3)]
-            ))
-        
+            ))"""
+
+        self.tilecreator.createInitial(self.player.vposition)
 
 
         #EIGHT RANDOM LIGHTS
@@ -102,7 +137,7 @@ class Game:
     def slowUpdate(self): #called every certain amount of time
         pass
 
-    def inputUpdate(self):
+    def mouseInputUpdate(self):
         ### mouse control ##
         (x,y) = pg.mouse.get_pos()
         theta_increment = self.frameTime * 0.05 * (320 - x)
@@ -110,6 +145,10 @@ class Game:
         # print(theta_increment,phi_increment)
         self.player.increment_direction(theta_increment, phi_increment)
         pg.mouse.set_pos((320,240))
+        pass
+
+
+    def inputUpdate(self):
         
         ### keyboard control ###
         keys = pg.key.get_pressed()
@@ -119,7 +158,7 @@ class Game:
 
         if keys[pg.K_SPACE]:
             if self.spkeydown == False:
-                self.player.jump(0.3)
+                self.player.jump(0.02*self.frameTime)
                 self.spkeydown = True
         else:
             self.spkeydown = False
@@ -155,7 +194,7 @@ class Game:
                     mesh = self.gameMeshes[1], #Cube
                     material = self.gameMaterials[0] #
                 )
-                tete.placeGameObject(self.gameObjects)
+                tete.placeGameObject()
                 #self.createTransform(self.gameMeshes[0])
 
                 print("C key pressed!")
@@ -166,38 +205,22 @@ class Game:
 
     def update(self): #Is called every frame
         ####
-        if(self.player.vposition.z > 0.5):
+        if(self.player.vposition.z > 2):
             self.player.displacement += Vector3(0,0,-0.0001*self.gravity*self.frameTime)
         else:
             if(self.player.displacement.z < 0):
                 self.player.displacement.z = 0
-                self.player.vposition.z = 0.5
+                self.player.vposition.z = 2
             pass
             #self.player.displacement = Vector3(0,0,0)
             #self.player.vposition.z = 0.5
 
         self.player.translate(self.player.displacement)         
-        print(self.player.vposition)                           
+        #print(self.player.vposition)                           
         self.player.position = np.array(self.player.vposition,dtype=np.float32)
         ####
         
         self.autoCreateMeshTransforms()
-
-        # Kiss me goodbye, I'm defying gravity
-        if(self.player.isGravity):
-            #self.player.pull_down(self.speedMultiplier*self.frameTime)
-            return
-           
-
-
-        ## Other stuff (add scene-object related things here) ###
-        for cube in self.gameObjects:
-            cube.eulers = np.mod(
-                cube.eulers + cube.eulerVelocity, 
-                [360, 360, 360], 
-                dtype = np.float32
-            )
-        
 
         pass
 
@@ -217,8 +240,6 @@ class Game:
         self.frameTime = 0
         self.speedMultiplier = 0.0025
         self.lightCount = 0
-
-        self.gameObjects = []
         
         self.lights = []
         self.player = pl.Player(
@@ -229,14 +250,10 @@ class Game:
             position = [-10, 0, 0]
         )
         self.camera = Camera(45,640/480,0.1,40)
-        self.view = View(800,600)
+        self.view = View(640,480)
 
         self.gameMeshes = []
         self.gameMaterials = []
-
-        self.gameObjs = []
-        self.buildParts = []
-        self.tiles = []
      
         self.start()
 
@@ -253,7 +270,7 @@ class Game:
         #self.engine = Engine(self.scene)
         
 
-        self.glStuffInit(self.camera, self.gameObjects)
+        self.glStuffInit(self.camera)
         # self.glStuffInit(self.camera, self.Tile)
         
         # start main loop
@@ -268,13 +285,15 @@ class Game:
                 if (event.type == pg.KEYDOWN and event.key==pg.K_ESCAPE):
                     running = False
             #update objects, get controls
+            self.showFrameRate()
+            self.mouseInputUpdate()
             self.inputUpdate()
             self.update()
             # self.physics()
             #refresh screen
             #print(self.currentTime)
             self.draw()
-            self.showFrameRate()
+            
         self.quit()
         pass
 
@@ -292,7 +311,7 @@ class Game:
                 self.frateTime = float(1000.0/1)
         self.numFrames += 1
     
-    def glStuffInit(self, icamera, igameObjects):
+    def glStuffInit(self, icamera):
          #initialise opengl
         glClearColor(0.1, 0.1, 0.1, 1)
         glEnable(GL_DEPTH_TEST)
