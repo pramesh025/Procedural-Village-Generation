@@ -53,7 +53,10 @@ class TileCreator: #SINGLETON
         ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[9],
             position=Vector3(int(playerPos.x)-1, int(playerPos.y), 0))
         ttile.placeTile()
-        """
+
+
+
+        
         ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[2],
             position=Vector3(int(playerPos.x)+1, int(playerPos.y)+1, 0))
         ttile.placeTile()
@@ -74,7 +77,7 @@ class TileCreator: #SINGLETON
         ttile.placeTile()
         ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[8],
             position=Vector3(int(playerPos.x)+3, int(playerPos.y)+1, 0))
-        ttile.placeTile()"""
+        ttile.placeTile()
 
         self.tilelist.append(firsttile)
         self.edgetiles.append(firsttile)

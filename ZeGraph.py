@@ -36,6 +36,7 @@ class ZeGraph: #SINGLETON
         self.addNode(ZeNode("WindowLR", BuildingPart(self.CwindowLR)))                  #7
         self.addNode(ZeNode("Lamp", BuildingPart(self.Clamp)))                          #8
         self.addNode(ZeNode("DoorR", BuildingPart(self.CdoorR)))                        #9
+        self.addNode(ZeNode("DoorL", BuildingPart(self.CdoorR)))                        #10
 
 
 
@@ -470,6 +471,54 @@ class ZeGraph: #SINGLETON
             name = "door",
             position = [0,0.37,0.8],
             eulers = [0,30,0],
+            mesh = self.gm[8], #WALL
+            material = self.gmm[4] #WINDOW
+        ))
+
+        return tete
+    
+    def CdoorL(self):
+        tete = go.GameObject(
+                    name = "floor",
+                    mesh = self.gm[2], #FLOOR
+                    material = self.gmm[0] #WOOD
+                )
+        #Post
+        tete.setChild(go.GameObject(
+            name = "post",
+            position = [0.5,0.5,0],
+            mesh = self.gm[11], #POST
+            material = self.gmm[5] #POST
+         ))
+
+        #lamp
+        tete.setChild(go.GameObject(
+            name = "lamp",
+            position = [0.2,0.5,1.5],
+            mesh = self.gm[13], #POST
+            material = self.gmm[6] #POST
+         ))
+
+        tete.setChild(go.GameObject(
+            name = "wall",
+            position = [0,-0.04,0],
+            eulers = [0,0,0],
+            mesh = self.gm[7], #WALL
+            material = self.gmm[1] #WINDOW
+        ))
+
+        tete.setChild(go.GameObject(
+            name = "doorbars",
+            position = [0,0.48,1.4],
+            eulers = [0,180,0],
+            mesh = self.gm[10], #WALL
+            material = self.gmm[2] #WINDOW
+        ))
+
+        tete.setChild(go.GameObject(
+            name = "door",
+            position = [0,0.37,0.8],
+            eulers = [0,-30,0],
             mesh = self.gm[8], #WALL
             material = self.gmm[4] #WINDOW
         ))
