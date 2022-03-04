@@ -77,7 +77,7 @@ class Game:
 
         #COLLECT MATERIALS
         self.gameMaterials.append(Matt("Floor", "png"))     #WOOD FLOOR       # 0
-        self.gameMaterials.append(Matt("Wall", "png"))      #STONE WALL       # 1
+        self.gameMaterials.append(Matt("crate", "png"))      #STONE WALL       # 1
         self.gameMaterials.append(Matt("Metal", "png"))     #SILVER METAL     # 2
         self.gameMaterials.append(Matt("Door", "png"))      #WINDOW           # 3
         self.gameMaterials.append(Matt("Door", "png"))      #DOOR             # 4
