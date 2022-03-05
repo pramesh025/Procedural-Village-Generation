@@ -1,6 +1,7 @@
 
 import numpy as np
 import pygame as pg
+import pyrr
 
 
 class GameObject:
@@ -14,15 +15,25 @@ class GameObject:
         self.setParent(parent)
         self.children = []
 
+        self.eulermat = pyrr.matrix44.create_from_eulers(eulers = np.radians(self.eulers), dtype=np.float16)
+        self.posmat = pyrr.matrix44.create_from_translation(
+                            vec=np.array(self.position),dtype=np.float16
+                        )
+
     def setPosition(self, iposition):
         self.position = np.array(iposition, dtype=np.float32)
         for child in self.children:
             child.setPosition([iposition[i] + child.position[i] for i in range(3)])
+        self.posmat = pyrr.matrix44.create_from_translation(
+                            vec=np.array(self.position),dtype=np.float16
+                        )
+        
         
     def setEulers(self, ieulers):
         self.eulers = np.array(ieulers, dtype=np.float32)
         for child in self.children:
             child.eulers([ieulers[i] + child.position[i] for i in range(3)])
+        self.eulermat = pyrr.matrix44.create_from_eulers(eulers = np.radians(self.eulers), dtype=np.float16)
     
     def setMesh(self, mesh):
         self.mesh = mesh

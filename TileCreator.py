@@ -1,4 +1,5 @@
 
+from random import randint
 from pygame import Vector3
 import GameObject as go
 import ZeGraph as zg
@@ -50,13 +51,19 @@ class TileCreator: #SINGLETON
         firsttile = Tile(tilecreator = self, node = self.zeGraph.nodes[0], #playground
             position=Vector3(int(playerPos.x), int(playerPos.y), 0))
         
-        ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[9],
-            position=Vector3(int(playerPos.x)-1, int(playerPos.y), 0))
-        ttile.placeTile()
+        #ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[9],
+        #    position=Vector3(int(playerPos.x)-1, int(playerPos.y), 0))
+        #ttile.placeTile()
+
+        for x in range(15):
+            for y in range(15):
+                ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[randint(0,9)],
+                position=Vector3(int(playerPos.x)+x-7, int(playerPos.y)+y-7, 0))
+                ttile.placeTile()
 
 
 
-        
+        """
         ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[2],
             position=Vector3(int(playerPos.x)+1, int(playerPos.y)+1, 0))
         ttile.placeTile()
@@ -77,11 +84,11 @@ class TileCreator: #SINGLETON
         ttile.placeTile()
         ttile = Tile(tilecreator = self, node = self.zeGraph.nodes[8],
             position=Vector3(int(playerPos.x)+3, int(playerPos.y)+1, 0))
-        ttile.placeTile()
+        ttile.placeTile()"""
 
         self.tilelist.append(firsttile)
         self.edgetiles.append(firsttile)
-        firsttile.placeTile()
+        #firsttile.placeTile()
 
         pass
 

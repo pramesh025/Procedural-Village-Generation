@@ -21,7 +21,7 @@ class Game:
 
         self.renderDistance = 10
         self.gravity = 5
-        self.speed = 0.005
+        self.speed = 0.0025
         self.slowUpdateTime = 1
 
         self.mainInit()
@@ -76,6 +76,7 @@ class Game:
 
 
         #COLLECT MATERIALS
+        
         self.gameMaterials.append(Matt("Floor", "png"))     #WOOD FLOOR       # 0
         self.gameMaterials.append(Matt("Wall", "png"))      #STONE WALL       # 1
         self.gameMaterials.append(Matt("Metal", "png"))     #SILVER METAL     # 2
@@ -162,7 +163,7 @@ class Game:
 
         if keys[pg.K_SPACE]:
             if self.spkeydown == False:
-                self.player.jump(0.02*self.frameTime)
+                self.player.jump(0.01*self.frameTime)
                 self.spkeydown = True
         else:
             self.spkeydown = False
@@ -474,6 +475,19 @@ class Game:
         glVertexAttribDivisor(8,1)
 
         glUseProgram(self.shaderColored)
+
+
+        for i, mgameObject in enumerate(mesh.assignedGameObjects):
+            model_transform = pyrr.matrix44.create_identity(dtype=np.float16)
+            model_transform = pyrr.matrix44.multiply(
+                m1=model_transform, 
+                m2=mgameObject.eulermat
+            )
+            model_transform = pyrr.matrix44.multiply(
+                m1=model_transform, 
+                m2=mgameObject.posmat
+            )
+            mesh.transforms[i] = model_transform
         pass
 
     def createShader(self, vertexFilepath, fragmentFilepath):
@@ -521,21 +535,18 @@ class Game:
 
         for mesh in self.gameMeshes:
             if(len(mesh.assignedGameObjects) > 0):
-                for i, mgameObject in enumerate(mesh.assignedGameObjects):
-                    model_transform = pyrr.matrix44.create_identity(dtype=np.float32)
+                """for i, mgameObject in enumerate(mesh.assignedGameObjects):
+                    model_transform = pyrr.matrix44.create_identity(dtype=np.float16)
                     model_transform = pyrr.matrix44.multiply(
                         m1=model_transform, 
-                        m2=pyrr.matrix44.create_from_eulers(
-                            eulers=np.radians(mgameObject.eulers), dtype=np.float32
-                        )
+                        m2=mgameObject.eulermat
                     )
                     model_transform = pyrr.matrix44.multiply(
                         m1=model_transform, 
-                        m2=pyrr.matrix44.create_from_translation(
-                            vec=np.array(mgameObject.position),dtype=np.float32
-                        )
+                        m2=mgameObject.posmat
                     )
                     mesh.transforms[i] = model_transform
+                """
             
                 glBindVertexArray(mesh.objmesh.vao)
                 glBindBuffer(
@@ -544,11 +555,6 @@ class Game:
                 )
                 glBufferData(GL_ARRAY_BUFFER, mesh.transforms.nbytes, mesh.transforms, GL_STATIC_DRAW)
 
-
-        #self.gameMaterials[0].matmat.use()
-        
-        for mesh in self.gameMeshes:
-            if(len(mesh.assignedGameObjects) > 0):
                 mesh.assignedGameObjects[0].material.matmat.use()
                 glDisable(GL_CULL_FACE)
                 glBindVertexArray(mesh.objmesh.vao)
@@ -558,6 +564,21 @@ class Game:
                 )
                 glDrawArraysInstanced(GL_TRIANGLES, 0, mesh.objmesh.vertex_count, len(mesh.assignedGameObjects))
 
+
+
+        #self.gameMaterials[0].matmat.use()
+        
+        """for mesh in self.gameMeshes:
+            if(len(mesh.assignedGameObjects) > 0):
+                mesh.assignedGameObjects[0].material.matmat.use()
+                glDisable(GL_CULL_FACE)
+                glBindVertexArray(mesh.objmesh.vao)
+                glBindBuffer(
+                    GL_ARRAY_BUFFER, 
+                    mesh.transformVBO
+                )
+                glDrawArraysInstanced(GL_TRIANGLES, 0, mesh.objmesh.vertex_count, len(mesh.assignedGameObjects))
+        """
 
         #glDrawArraysInstanced(GL_TRIANGLES, 0, self.cube_mesh.vertex_count, len(scene.cubes))
         
