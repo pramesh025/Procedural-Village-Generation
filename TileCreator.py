@@ -18,6 +18,9 @@ class Tile:
         self.possiblenodeweights = None
         self.orientation = 0 #side of GameObject that faces 0 (x axis) in the world
 
+    def getEntropy(self):
+        return self.possiblenodeweights[-1]
+
     def placeTile(self, nodes):
         self.gameObject = nodes[self.zenode].buildingpart.build()
         #self.gameObject.setEulers([0,90*self.orientation,0])
@@ -116,6 +119,9 @@ class TileCreator: #SINGLETON
         thetile.possiblenodes, thetile.possiblenodeweights = self.zeGraph.possiblilites(towards)
 
     def fillTiles(self, playerPos, renderdist = 5):
+
+
+
         pass
 
 
@@ -171,13 +177,20 @@ class TileCreator: #SINGLETON
             ttt = self.tiles.pop(tt)
             ttt.unplaceTile()
 
+        waitingTiles = TileMinHeap()
+        
         while len(toGenerate) > 0:
             tt = toGenerate.pop()
             #print("generating at", tt)
             self.tiles[tt] = Tile(self, tt)
             self.generatePossibleNodes(self.tiles[tt])
-            self.tiles[tt].collapse()
-            self.tiles[tt].placeTile(self.zeGraph.nodes)
+            waitingTiles.pushTile(self.tiles[tt])
+            #self.tiles[tt].collapse()
+            #self.tiles[tt].placeTile(self.zeGraph.nodes)
+
+        for tile in waitingTiles.theHeap:
+            tile.collapse()
+            tile.placeTile(self.zeGraph.nodes)
 
         #print("iteration complete")
 
@@ -314,22 +327,26 @@ class TileCreator: #SINGLETON
 
 
 
-class NodeMinHeap:
+class TileMinHeap:
     def __init__(self) -> None:
         self.theHeap = []
     
     def push(self, pushThis):
         self.theHeap.append(pushThis) 
-        self.minHeapify(len(self.theHeap) - 1)
+        n = int((len(self.theHeap)//2)-1)
+        for k in range(n, -1, -1):
+            self.minHeapify(k)
 
     def remove(self, removeThis):
         self.theHeap.remove(removeThis)
         self.minHeapify(len(self.theHeap) - 1)
         pass
 
-
-    def root(self):
-        return self.theHeap[0]
+    def poproot(self):
+        p = int((len(self.theHeap)-1)/2)
+        min = self.theHeap.pop(p)
+        self.minHeapify(p)
+        return min
 
     def minHeapify(self, k):
         p = int((k-1)/2)
@@ -337,3 +354,13 @@ class NodeMinHeap:
             self.theHeap[k], self.theHeap[p] = self.theHeap[p], self.theHeap[k]
             k = int((k-1)/2)
     pass
+
+    def pushTile(self, pushThis):
+        for i in range(len(self.theHeap)):
+            if pushThis.getEntropy() > self.theHeap[i].getEntropy():
+                self.theHeap.insert(i, pushThis)
+                return
+        self.theHeap.append(pushThis)
+
+    def pop(self):
+        return self.theHeap.pop(0)

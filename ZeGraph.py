@@ -33,62 +33,64 @@ class ZeGraph: #SINGLETON
         self.addNode(ZeNode("WoodFloor", BuildingPart(self.CwoodFloor),20))                #1   WoodFloor
         self.addNode(ZeNode("Sand", BuildingPart(self.Csand),50))                          #2   Sand
         self.addNode(ZeNode("WallI", BuildingPart(self.CwallI),8))                         #3   Wall I
-        self.addNode(ZeNode("WallL", BuildingPart(self.CwallL),3))                         #4   Wall L
-        self.addNode(ZeNode("WindowI", BuildingPart(self.CwindowI),4))                     #5   Window I
-        self.addNode(ZeNode("WindowLDouble", BuildingPart(self.CwindowLDouble),3))         #6   Window DOUBLE
+        self.addNode(ZeNode("WallL", BuildingPart(self.CwallL),4))                         #4   Wall L
+        self.addNode(ZeNode("WindowI", BuildingPart(self.CwindowI),8))                     #5   Window I
+        self.addNode(ZeNode("WindowLDouble", BuildingPart(self.CwindowLDouble),4))         #6   Window DOUBLE
         self.addNode(ZeNode("WindowLL", BuildingPart(self.CwindowLL),4))                   #7   Window LL
         self.addNode(ZeNode("WindowLR", BuildingPart(self.CwindowLR),4))                   #8   Window LR
         self.addNode(ZeNode("Lamp", BuildingPart(self.Clamp),1))                           #9   Lamp
         self.addNode(ZeNode("DoorR", BuildingPart(self.CdoorR),4))                         #10  DoorR
         self.addNode(ZeNode("DoorL", BuildingPart(self.CdoorL),4))                         #11  DoorL
+        self.addNode(ZeNode("Corner", BuildingPart(self.Ccorner),10))                         #12  DoorL
+
 
         
 
         #Directions: 0 is x, 1 is y, 2 is -x, 3 is -y
-        self.nodes[0].nexts = [ {1,2,3,4,5,6,7,8,9,10,11},  #0, x
-                                {1,2,3,4,5,6,7,8,9,10,11},  #1, y
-                                {1,2,3,4,5,6,7,8,9,10,11},  #2, -x
-                                {1,2,3,4,5,6,7,8,9,10,11}]  #4, -y
+        self.nodes[0].nexts = [ {1,2,3,4,5,6,7,8,9,10,11,12},  #0, x
+                                {1,2,3,4,5,6,7,8,9,10,11,12},  #1, y
+                                {1,2,3,4,5,6,7,8,9,10,11,12},  #2, -x
+                                {1,2,3,4,5,6,7,8,9,10,11,12}]  #4, -y
 
-        self.nodes[1].nexts = [ {1,3,4,5,6,7,8,9},  #0, x
-                                {1,3,4,5,6,7,8,9},  #1, y
-                                {1,3,4,5,6,7,8,9},  #2, -x
-                                {1,3,4,5,6,7,8,9}]  #4, -y
+        self.nodes[1].nexts = [ {1,3,4,5,6,7,8,9,12},  #0, x
+                                {1,3,4,5,6,7,8,9,12},  #1, y
+                                {1,3,4,5,6,7,8,9,12},  #2, -x
+                                {1,3,4,5,6,7,8,9,12}]  #4, -y
 
         self.nodes[2].nexts = [ {2,3,4,5,6,7,8,10,11},  #0, x
                                 {2,3,4,5,6,7,8,10,11},  #1, y
                                 {2,3,4,5,6,7,8,10,11},  #2, -x
                                 {2,3,4,5,6,7,8,10,11}]  #4, -y
 
-        self.nodes[3].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
+        self.nodes[3].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
                                 {2},  #1, y
-                                {3,4,5,6,7,8,10,11},  #2, -x
-                                {1,9}]  #4, -y
+                                {3,4,5,6,7,8,10,11,12},  #2, -x
+                                {1,9,12}]  #4, -y
 
-        self.nodes[4].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
+        self.nodes[4].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
                                 {2},  #1, y
                                 {2},  #2, -x
-                                {3,4,5,6,7,8,10,11}]  #4, -y
+                                {3,4,5,6,7,8,10,11,12}]  #4, -y
 
-        self.nodes[5].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
+        self.nodes[5].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
                                 {2},  #1, y
-                                {3,4,5,6,7,8,10,11},  #2, -x
-                                {1,9}]  #4, -y
+                                {3,4,5,6,7,8,10,11,12},  #2, -x
+                                {1,9,12}]  #4, -y
 
-        self.nodes[6].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
-                                {2},  #1, y
-                                {2},  #2, -x
-                                {3,4,5,6,7,8,10,11}]  #4, -y
-
-        self.nodes[7].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
+        self.nodes[6].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
                                 {2},  #1, y
                                 {2},  #2, -x
-                                {3,4,5,6,7,8,10,11}]  #4, -y      
+                                {3,4,5,6,7,8,10,11,12}]  #4, -y
 
-        self.nodes[8].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
+        self.nodes[7].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
                                 {2},  #1, y
                                 {2},  #2, -x
-                                {3,4,5,6,7,8,10,11}]  #4, -y                  
+                                {3,4,5,6,7,8,10,11,12}]  #4, -y      
+
+        self.nodes[8].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
+                                {2},  #1, y
+                                {2},  #2, -x
+                                {3,4,5,6,7,8,10,11,12}]  #4, -y                  
 
         self.nodes[9].nexts = [ {1,3,4,5,6,7,8,9},  #0, x
                                 {1,3,4,5,6,7,8,9},  #1, y
@@ -103,6 +105,11 @@ class ZeGraph: #SINGLETON
         self.nodes[11].nexts = [{3,4,5,6,7,8},  #0, x
                                 {2},  #1, y
                                 {10},  #2, -x
+                                {1,9}]  #4, -y
+
+        self.nodes[12].nexts = [{1,9},  #0, x
+                                {3,4,5,6,7,8},  #1, y
+                                {3,4,5,6,7,8},  #2, -x
                                 {1,9}]  #4, -y
 
         pass
@@ -265,6 +272,14 @@ class ZeGraph: #SINGLETON
                     mesh = self.gm[0], #FLOOR
                     material = self.gmm[0] #WOOD
                 )
+        
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))
         return tete
 
     def Csand(self):
@@ -281,6 +296,13 @@ class ZeGraph: #SINGLETON
                     mesh = self.gm[2], #FLOOR I
                     material = self.gmm[0] #WOOD
                 )
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))
         tete.setChild(go.GameObject(
             name = "wall",
             position = [0,-0.04,0],
@@ -320,6 +342,13 @@ class ZeGraph: #SINGLETON
             eulers = [0,-90,0],
             mesh = self.gm[3], #WALL
             material = self.gmm[1] #WALL
+        ))
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
         ))
         return tete
         
@@ -362,7 +391,13 @@ class ZeGraph: #SINGLETON
             mesh = self.gm[12], #WINDOW BASE
             material = self.gmm[8] #STONE
         ))
-        
+        windowI.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))
         return windowI
 
     def CwindowLDouble(self):
@@ -448,6 +483,14 @@ class ZeGraph: #SINGLETON
             mesh = self.gm[12], #WINDOW BASE
             material = self.gmm[8] #STONE
         ))
+
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))
         return tete
 
     def CwindowLL(self):
@@ -507,6 +550,14 @@ class ZeGraph: #SINGLETON
             mesh = self.gm[3], #WALL WITH WINDOW HOLE
             material = self.gmm[1] #WALL
          ))
+
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))
         return tete
 
     def CwindowLR(self):
@@ -568,6 +619,14 @@ class ZeGraph: #SINGLETON
             mesh = self.gm[12], #WINDOW BASE
             material = self.gmm[8] #STONE
         ))
+
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))
         return tete
     
     def Clamp(self):
@@ -591,6 +650,14 @@ class ZeGraph: #SINGLETON
             mesh = self.gm[13], #POST
             material = self.gmm[6] #POST
          ))
+
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))
 
         return tete
 
@@ -640,6 +707,14 @@ class ZeGraph: #SINGLETON
             material = self.gmm[4] #WINDOW
         ))
 
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))
+
         return tete
     
     def CdoorL(self):
@@ -686,6 +761,40 @@ class ZeGraph: #SINGLETON
             eulers = [0,-30,0],
             mesh = self.gm[8], #WALL
             material = self.gmm[4] #WINDOW
+        ))
+
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))
+
+        return tete
+
+    def Ccorner(self):
+        tete = go.GameObject(
+                    name = "floor",
+                    position = [0,0,0],
+                    eulers = [0,0,0],
+                    mesh = self.gm[15], #FLOOR
+                    material = self.gmm[9] #WOOD
+                )
+                #Post
+        tete.setChild(go.GameObject(
+            name = "post",
+            position = [-0.5,0.5,0],
+            mesh = self.gm[11], #POST
+            material = self.gmm[5] #POST
+         ))
+
+        tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
         ))
 
         return tete

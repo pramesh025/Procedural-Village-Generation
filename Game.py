@@ -62,6 +62,7 @@ class Game:
         self.gameMeshes.append(Mesh("models/Triangulated/windowbase.obj")) #WINDOW BASE        # 12
         self.gameMeshes.append(Mesh("models/Triangulated/lamp.obj"))       #LAMP               # 13
         self.gameMeshes.append(Mesh("models/Triangulated/sand.obj"))       #SAND               # 14
+        self.gameMeshes.append(Mesh("models/Triangulated/woodfloor.obj"))  #WOOD CEILING       # 15
 
 
         #COLLECT MATERIALS
@@ -81,7 +82,7 @@ class Game:
 
 
         #EIGHT RANDOM LIGHTS
-        for i in range(8):
+        for i in range(11):
             self.lights.append(Light(
                 name = "light " + str(i),
                 position = [random.uniform(a = -10, b = 10) for x in range(3)],
@@ -433,6 +434,12 @@ class Game:
             mesh.transforms[i] = model_transform
         pass
 
+        if(mesh == self.gameMeshes[13]):
+            for i, mgameObject in enumerate(mesh.assignedGameObjects):
+                if i > 10: break
+                self.lights[i].position = mgameObject.position
+
+
     def createShader(self, vertexFilepath, fragmentFilepath):
 
         with open(vertexFilepath,'r') as f:
@@ -473,7 +480,7 @@ class Game:
         for i, light in enumerate(self.lights):
             glUniform3fv(self.lightLocTextured["pos"][i], 1, light.position)
             glUniform3fv(self.lightLocTextured["color"][i], 1, light.color)
-            glUniform1f(self.lightLocTextured["strength"][i], 2)
+            glUniform1f(self.lightLocTextured["strength"][i], 0.5)
         
 
         for mesh in self.gameMeshes:
