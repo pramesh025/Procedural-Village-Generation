@@ -14,7 +14,6 @@ import GameObject as go
 from pygame import Vector3
 
 
-
 class Game:
     def __init__(self):
         #Place Game variables
@@ -94,6 +93,8 @@ class Game:
 
     def slowUpdate(self): #called every certain amount of time
         self.tilecreator.iterateTileCreation(self.player.vposition, 50)
+
+
         return
         if(abs(self.player.position[0] - self.prevPlayerPos[0]) > 1 or abs(self.player.position[1] - self.prevPlayerPos[1]) > 1):
             self.tilecreator.iterateTileCreation(self.player.vposition, 5)
@@ -221,7 +222,7 @@ class Game:
                     running = False
             #update objects, get controls
 
-
+            self.showFrameRate()
             
             self.mouseInputUpdate()
             self.inputUpdate()
@@ -230,7 +231,7 @@ class Game:
             # self.physics()
             #refresh screen
             #print(self.currentTime)
-            self.showFrameRate()
+            
             self.draw()
             
             
@@ -256,10 +257,18 @@ class Game:
     
     def glStuffInit(self, icamera):
          #initialise opengl
-        glClearColor(0.1, 0.2, 0.3, 1)
+
+        glClearColor(0, 0, 0, 1)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)
+
+
+        
+        
+
+
+
 
         self.shaderTextured = self.createShader(
             "shaders/vertex.txt", 
@@ -367,6 +376,8 @@ class Game:
                 self.shaderColored,"projection"
             ),1,GL_FALSE,projection_transform
         )
+
+        
 
         pass
 

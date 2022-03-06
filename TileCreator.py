@@ -115,7 +115,11 @@ class TileCreator: #SINGLETON
 
         thetile.possiblenodes, thetile.possiblenodeweights = self.zeGraph.possiblilites(towards)
 
-    #def fillTiles(self, playerPos, renderdist = 5):
+    def fillTiles(self, playerPos, renderdist = 5):
+        pass
+
+
+
         
     def iterateTileCreation(self, playerPos, renderdist = 5):
 

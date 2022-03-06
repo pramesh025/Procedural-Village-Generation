@@ -39,8 +39,8 @@ class ZeGraph: #SINGLETON
         self.addNode(ZeNode("WindowLL", BuildingPart(self.CwindowLL),4))                   #7   Window LL
         self.addNode(ZeNode("WindowLR", BuildingPart(self.CwindowLR),4))                   #8   Window LR
         self.addNode(ZeNode("Lamp", BuildingPart(self.Clamp),1))                           #9   Lamp
-        self.addNode(ZeNode("DoorR", BuildingPart(self.CdoorR),2))                         #10  DoorR
-        self.addNode(ZeNode("DoorL", BuildingPart(self.CdoorL),2))                         #11  DoorL
+        self.addNode(ZeNode("DoorR", BuildingPart(self.CdoorR),4))                         #10  DoorR
+        self.addNode(ZeNode("DoorL", BuildingPart(self.CdoorL),4))                         #11  DoorL
 
         
 
@@ -63,7 +63,7 @@ class ZeGraph: #SINGLETON
         self.nodes[3].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
                                 {2},  #1, y
                                 {3,4,5,6,7,8,10,11},  #2, -x
-                                {1,3,4,5,6,7,8,9,10,11}]  #4, -y
+                                {1,9}]  #4, -y
 
         self.nodes[4].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
                                 {2},  #1, y
@@ -73,7 +73,7 @@ class ZeGraph: #SINGLETON
         self.nodes[5].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
                                 {2},  #1, y
                                 {3,4,5,6,7,8,10,11},  #2, -x
-                                {1,3,4,5,6,7,8,9,10,11}]  #4, -y
+                                {1,9}]  #4, -y
 
         self.nodes[6].nexts = [ {3,4,5,6,7,8,10,11},  #0, x
                                 {2},  #1, y
@@ -97,13 +97,13 @@ class ZeGraph: #SINGLETON
         
         self.nodes[10].nexts = [{11},  #0, x
                                 {2},  #1, y
-                                {1,3,4,5,6,7,8,9},  #2, -x
+                                {1,9},  #2, -x
                                 {3,4,5,6,7,8}]  #4, -y
         
         self.nodes[11].nexts = [{3,4,5,6,7,8},  #0, x
                                 {2},  #1, y
                                 {10},  #2, -x
-                                {1,3,4,5,6,7,8,9}]  #4, -y
+                                {1,9}]  #4, -y
 
         pass
 
