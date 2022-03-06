@@ -22,7 +22,7 @@ class Game:
         self.renderDistance = 10
         self.gravity = 5
         self.speed = 0.0025
-        self.slowUpdateTime = 1
+        self.slowUpdateTime = 0.5
 
         self.mainInit()
         pass
@@ -47,17 +47,6 @@ class Game:
         self.ppx = 320
         self.ppy = 240
 
-
-        """self.gameMeshes.append(Mesh("models/3dstestsobj2.obj")) # 0
-        self.gameMeshes.append(Mesh("models/testmodel1.obj")) # 1
-        self.gameMeshes.append(Mesh("models/Triangulated/wallwindow.obj")) # 2
-        self.gameMeshes.append(Mesh("models/Triangulated/woodfloor.obj")) # 3
-
-        self.gameMaterials.append(Matt("wall", "png")) # 0
-        self.gameMaterials.append(Matt("wood", "png")) # 1
-        self.gameMaterials.append(Matt("white", "png")) # 2
-        self.gameMaterials.append(Matt("crate", "png")) # 3"""
-
         #COLLECT MESHES
         self.gameMeshes.append(Mesh("models/Triangulated/woodfloor.obj"))  #WOOD FLOOR LEVEL 0 # 0
         self.gameMeshes.append(Mesh("models/Triangulated/woodfloorL.obj")) #WOOD FLOOR L       # 1
@@ -73,6 +62,7 @@ class Game:
         self.gameMeshes.append(Mesh("models/Triangulated/post.obj"))       #POST               # 11
         self.gameMeshes.append(Mesh("models/Triangulated/windowbase.obj")) #WINDOW BASE        # 12
         self.gameMeshes.append(Mesh("models/Triangulated/lamp.obj"))       #LAMP               # 13
+        self.gameMeshes.append(Mesh("models/Triangulated/sand.obj"))       #SAND               # 14
 
 
         #COLLECT MATERIALS
@@ -87,42 +77,6 @@ class Game:
         self.gameMaterials.append(Matt("Sand", "png"))      #SAND             # 7
         self.gameMaterials.append(Matt("Stone", "png"))     #STONE            # 8
         self.gameMaterials.append(Matt("crate", "png"))     #TEST CRATE       # 9
-
-
-        
-        #CREATING FLOATING SPINNING CRATES
-        """for i in range(1):
-            self.gameObjects.append(GameObject(
-                name = "cube " + str(i),
-                position = [random.uniform(a = -5, b = 5), random.uniform(a = -5, b = 5), 5 ],
-                eulers = [random.uniform(a = 0, b = 360) for x in range(3)],
-                eulerVelocity = [random.uniform(a = -0.1, b = 0.1) for x in range(3)],
-                mesh = self.gameMeshes[0], #Cube
-                material = self.gameMaterials[2] #
-            ))
-
-        """
-        #CREATING ROOMS
-        
-        """for i in range(10):
-            for ii in range(10):
-                tetete = go.GameObject(
-                    name = "weird " + str(i),
-                    position = [i, ii, 0],
-                    eulers = [-0,random.randint(0,3) * 90,0],
-                    eulerVelocity = [0,0,0],
-                    mesh = self.gameMeshes[3], #Weird
-                    material = self.gameMaterials[3] #white
-                )
-                tetete.placeGameObject(self.gameObjects)
-
-            self.lights.append(Light(
-                name = "light " + str(i),
-                position = [i*2, ii*2, 1],
-                color = [0.5,0.5,0.5]
-
-                # color = [random.uniform(a = 0, b = 1) for x in range(3)]
-            ))"""
 
         self.tilecreator.createInitial(self.player.vposition)
 
@@ -139,6 +93,13 @@ class Game:
         pass
 
     def slowUpdate(self): #called every certain amount of time
+        self.tilecreator.iterateTileCreation(self.player.vposition, 50)
+        return
+        if(abs(self.player.position[0] - self.prevPlayerPos[0]) > 1 or abs(self.player.position[1] - self.prevPlayerPos[1]) > 1):
+            self.tilecreator.iterateTileCreation(self.player.vposition, 5)
+            self.prevPlayerPos = [int(self.player.position[0]), int(self.player.position[1])]
+            #print(self.player.position, self.prevPlayerPos)
+            pass
         pass
 
     def mouseInputUpdate(self):
@@ -163,7 +124,7 @@ class Game:
 
         if keys[pg.K_SPACE]:
             if self.spkeydown == False:
-                self.player.jump(0.01*self.frameTime)
+                self.player.jump(0.05*self.frameTime)
                 self.spkeydown = True
         else:
             self.spkeydown = False
@@ -180,29 +141,11 @@ class Game:
         if keys[pg.K_DOWN]:
             self.player.moveBack(self.speed*self.frameTime)
             return
-        #if keys[pg.K_LSHIFT]:
-        #    self.player.pull_down(self.speedMultiplier*self.frameTime)
-        #    return
-        #if(not self.player.isGravity):
-        #    if keys[pg.K_SPACE]:
-        #       self.player.pull_up(self.speedMultiplier*self.frameTime)
-        #       return
-
-        
+      
 
         if keys[pg.K_c]:
             if self.ckeydown == False:
-                #doo thu stuff
-                tete = go.GameObject(
-                    name = "cube extra",
-                    position = self.player.position,
-                    mesh = self.gameMeshes[1], #Cube
-                    material = self.gameMaterials[0] #
-                )
-                tete.placeGameObject()
-                #self.createTransform(self.gameMeshes[0])
-
-                print("C key pressed!")
+                self.tilecreator.iterateTileCreation(self.player.vposition, 5)
                 self.ckeydown = True
         else:
             self.ckeydown = False
@@ -217,24 +160,13 @@ class Game:
                 self.player.displacement.z = 0
                 self.player.vposition.z = 1.5
             pass
-            #self.player.displacement = Vector3(0,0,0)
-            #self.player.vposition.z = 0.5
 
-        self.player.translate(self.player.displacement)         
-        #print(self.player.vposition)                           
+        self.player.translate(self.player.displacement)                               
         self.player.position = np.array(self.player.vposition,dtype=np.float32)
         ####
         
         self.autoCreateMeshTransforms()
         pass
-
-        
-
-    # def physics(self):
-    #     # gravity
-    #     self.player.move
-
-
 
     #Don't change things after here unless you know what you're doing -Rob
     def mainInit(self):
@@ -247,9 +179,10 @@ class Game:
         
         self.lights = []
         self.player = pl.Player(
-            position = [0, 1.5, 1],
+            position = [0, 1, 1.5],
             eulers = [0, 0, 0]
         )
+        self.prevPlayerPos = [0,1]
         self.physics = phy.physics(
             position = [-10, 0, 0]
         )
@@ -271,12 +204,9 @@ class Game:
         pg.mouse.set_pos((int(self.view.hres/2),int(self.view.vres/2)))
         pg.mouse.set_visible(False)
         pg.event.set_grab(True)
-
-        #self.engine = Engine(self.scene)
         
 
         self.glStuffInit(self.camera)
-        # self.glStuffInit(self.camera, self.Tile)
         
         # start main loop
         self.mainLoop()
@@ -296,6 +226,7 @@ class Game:
             self.mouseInputUpdate()
             self.inputUpdate()
             self.update()
+
             # self.physics()
             #refresh screen
             #print(self.currentTime)
@@ -309,7 +240,8 @@ class Game:
     def showFrameRate(self):
         self.currentTime = pg.time.get_ticks()
         delta = self.currentTime - self.lastTime
-        if (delta >= 1000):
+        if (delta >= 1000*self.slowUpdateTime):
+            self.slowUpdate()
 
 
             framerate = int(1000.0 * self.numFrames/delta)
