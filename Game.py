@@ -147,7 +147,7 @@ class Game:
 
         if keys[pg.K_c]:
             if self.ckeydown == False:
-                self.tilecreator.iterateTileCreation(self.player.vposition, 5)
+                self.tilecreator.iterateTileCreation(self.player.vposition, 50)
                 self.ckeydown = True
         else:
             self.ckeydown = False

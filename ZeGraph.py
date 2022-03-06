@@ -30,7 +30,7 @@ class ZeGraph: #SINGLETON
         #create all the building-part build functions
         self.addNode(ZeNode("Playground", BuildingPart(self.Cplayground),10))              #0   TESTING
 
-        self.addNode(ZeNode("WoodFloor", BuildingPart(self.CwoodFloor),20))                #1   WoodFloor
+        self.addNode(ZeNode("WoodFloor", BuildingPart(self.CwoodFloor),50))                #1   WoodFloor
         self.addNode(ZeNode("Sand", BuildingPart(self.Csand),50))                          #2   Sand
         self.addNode(ZeNode("WallI", BuildingPart(self.CwallI),8))                         #3   Wall I
         self.addNode(ZeNode("WallL", BuildingPart(self.CwallL),4))                         #4   Wall L
@@ -41,7 +41,7 @@ class ZeGraph: #SINGLETON
         self.addNode(ZeNode("Lamp", BuildingPart(self.Clamp),1))                           #9   Lamp
         self.addNode(ZeNode("DoorR", BuildingPart(self.CdoorR),4))                         #10  DoorR
         self.addNode(ZeNode("DoorL", BuildingPart(self.CdoorL),4))                         #11  DoorL
-        self.addNode(ZeNode("Corner", BuildingPart(self.Ccorner),10))                         #12  DoorL
+        self.addNode(ZeNode("Corner", BuildingPart(self.Ccorner),10))                      #12  Corner
 
 
         
@@ -65,7 +65,7 @@ class ZeGraph: #SINGLETON
         self.nodes[3].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
                                 {2},  #1, y
                                 {3,4,5,6,7,8,10,11,12},  #2, -x
-                                {1,9,12}]  #4, -y
+                                {1,9}]  #4, -y
 
         self.nodes[4].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
                                 {2},  #1, y
@@ -75,7 +75,7 @@ class ZeGraph: #SINGLETON
         self.nodes[5].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
                                 {2},  #1, y
                                 {3,4,5,6,7,8,10,11,12},  #2, -x
-                                {1,9,12}]  #4, -y
+                                {1,9}]  #4, -y
 
         self.nodes[6].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
                                 {2},  #1, y
@@ -99,18 +99,18 @@ class ZeGraph: #SINGLETON
         
         self.nodes[10].nexts = [{11},  #0, x
                                 {2},  #1, y
-                                {1,9},  #2, -x
-                                {3,4,5,6,7,8}]  #4, -y
+                                {1,9,12},  #2, -x
+                                {3,4,5,6,7,8,12}]  #4, -y
         
-        self.nodes[11].nexts = [{3,4,5,6,7,8},  #0, x
+        self.nodes[11].nexts = [{3,4,5,6,7,8,12},  #0, x
                                 {2},  #1, y
                                 {10},  #2, -x
-                                {1,9}]  #4, -y
+                                {1,9,12}]  #4, -y
 
-        self.nodes[12].nexts = [{1,9},  #0, x
-                                {3,4,5,6,7,8},  #1, y
-                                {3,4,5,6,7,8},  #2, -x
-                                {1,9}]  #4, -y
+        self.nodes[12].nexts = [{1,9,12},  #0, x
+                                {3,4,5,6,7,8,12},  #1, y
+                                {3,4,5,6,7,8,12},  #2, -x
+                                {1,9,12}]  #4, -y
 
         pass
 
@@ -204,7 +204,7 @@ class ZeGraph: #SINGLETON
     def Cplayground(self):
         tete = go.GameObject(
                     name = "floor",
-                    mesh = self.gm[2], #FLOOR
+                    mesh = self.gm[0], #FLOOR
                     material = self.gmm[0] #WOOD
                 )
 
@@ -261,7 +261,13 @@ class ZeGraph: #SINGLETON
             mesh = self.gm[3], #WALL
             material = self.gmm[1] #WALL
         ))
-        
+        """tete.setChild(go.GameObject(
+            name = "ceiling",
+            position = [0,0,2.4],
+            eulers = [0,0,0],
+            mesh = self.gm[15], #WALL
+            material = self.gmm[9] #WINDOW
+        ))"""
 
         return tete
 
@@ -778,8 +784,8 @@ class ZeGraph: #SINGLETON
                     name = "floor",
                     position = [0,0,0],
                     eulers = [0,0,0],
-                    mesh = self.gm[15], #FLOOR
-                    material = self.gmm[9] #WOOD
+                    mesh = self.gm[0], #FLOOR
+                    material = self.gmm[0] #WOOD
                 )
                 #Post
         tete.setChild(go.GameObject(

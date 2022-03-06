@@ -12,7 +12,6 @@ class Tile:
                                 (index[0],index[1]+1),  # 1 towards y axis
                                 (index[0]-1,index[1]),  # 2 towards -x axis
                                 (index[0],index[1]-1)]  # 3 towards -y axis
-        self.neighbour = [None, None, None, None]
         self.zenode = 0
         self.possiblenodes = None
         self.possiblenodeweights = None
@@ -119,7 +118,7 @@ class TileCreator: #SINGLETON
         thetile.possiblenodes, thetile.possiblenodeweights = self.zeGraph.possiblilites(towards)
 
     def fillTiles(self, playerPos, renderdist = 5):
-
+        toDelete = set()
 
 
         pass
@@ -133,7 +132,7 @@ class TileCreator: #SINGLETON
         toGenerate = set()
         #toRemoveFromEdge = set()
         #toTurnIntoEdge = set()
-        toDelete = set()
+        toDelete = []
 
         """for tileindex in self.edgetiles:
             if self.getTaxicabDist(tileindex, playerPos) > renderdist:
@@ -155,7 +154,7 @@ class TileCreator: #SINGLETON
         for tileindex in self.tiles:
             if self.getTaxicabDist(tileindex, playerPos) > renderdist:
                 ##print(tileindex, " is outside limits")
-                toDelete.add(tileindex)
+                toDelete.append(tileindex)
             else:
                 ##print(tileindex, " is within limits")
                 for i in range(4):
@@ -171,7 +170,6 @@ class TileCreator: #SINGLETON
 
                         
         while len(toDelete) > 0:
-            
             tt = toDelete.pop()
             #print("removing at ", tt)
             ttt = self.tiles.pop(tt)
@@ -188,6 +186,7 @@ class TileCreator: #SINGLETON
             #self.tiles[tt].collapse()
             #self.tiles[tt].placeTile(self.zeGraph.nodes)
 
+        print("Entropies", [x.getEntropy() for x in waitingTiles.theHeap])
         for tile in waitingTiles.theHeap:
             tile.collapse()
             tile.placeTile(self.zeGraph.nodes)
@@ -357,7 +356,7 @@ class TileMinHeap:
 
     def pushTile(self, pushThis):
         for i in range(len(self.theHeap)):
-            if pushThis.getEntropy() > self.theHeap[i].getEntropy():
+            if pushThis.getEntropy() <= self.theHeap[i].getEntropy():
                 self.theHeap.insert(i, pushThis)
                 return
         self.theHeap.append(pushThis)
