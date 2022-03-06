@@ -126,7 +126,7 @@ class Game:
 
         if keys[pg.K_SPACE]:
             if self.spkeydown == False:
-                self.player.jump(0.05*self.frameTime)
+                self.player.jump(0.005*self.frameTime)
                 self.spkeydown = True
         else:
             self.spkeydown = False
@@ -134,13 +134,13 @@ class Game:
         if keys[pg.K_UP] or keys[pg.K_w] or keys[pg.K_COMMA]:
             self.player.moveForward(self.speed*self.frameTime)
             return
-        if keys[pg.K_RIGHT]:
+        if keys[pg.K_RIGHT] or keys[pg.K_d]:
             self.player.moveRight(self.speed*self.frameTime)
             return
-        if keys[pg.K_LEFT]:
+        if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.player.moveLeft(self.speed*self.frameTime)
             return
-        if keys[pg.K_DOWN]:
+        if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.player.moveBack(self.speed*self.frameTime)
             return
       
