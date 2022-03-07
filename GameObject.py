@@ -50,25 +50,6 @@ class GameObject:
             t = self.position[0]
             self.position[0] = -self.position[1]
             self.position[1] = t
-
-        """
-        if orientation != 0:
-            parentpos = [self.parent.position[ii] for ii in range(3)]
-            self.position = [self.position[i] - parentpos[i] for i in range(3)]
-            if orientation == 1:
-                t = self.position[0]
-                self.position[0] = - self.position[1]
-                self.position[1] = t
-            elif orientation == 2:
-                self.position[0] = - self.position[0]
-                self.position[1] = - self.position[1]
-            elif orientation == 3:
-                t = self.position[0]
-                self.position[0] = self.position[1]
-                self.position[1] = -t
-            self.position = np.array([self.position[i] + parentpos[i] for i in range(3)], dtype=np.float16)
-        for child in self.children:
-            child.setChildOrientation(orientation, self.eulers[1] + child.eulers[1])"""
         self.eulermat = pyrr.matrix44.create_from_eulers(eulers = np.radians(self.eulers), dtype=np.float16)
 
     

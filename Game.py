@@ -1,4 +1,3 @@
-from turtle import position
 import pygame as pg
 from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram,compileShader
@@ -8,9 +7,7 @@ import random
 import Material as mat
 import ObjMesh as obj
 import Player as pl
-import Physics as phy
 import TileCreator
-import GameObject as go
 from pygame import Vector3
 
 
@@ -21,18 +18,13 @@ class Game:
         self.renderDistance = 10
         self.gravity = 5
         self.speed = 0.0025
-        self.slowUpdateTime = 0.5
+        self.slowUpdateTime = 1
 
         self.mainInit()
         pass
 
     
     def start(self): #CALLED Before the first frame
-        ####   list of created variables
-        #  cubes =[8 cubes]
-        #  lights = [8 lights]
-        #  player
-        ####   end of variable list
         self.tilecreator = TileCreator.TileCreator(self.gameMeshes, self.gameMaterials)
 
 
@@ -40,11 +32,8 @@ class Game:
         self.spkeydown = False
 
         self.view.setProperties(640,480)
-        self.camera.setProperties(45,640/480,0.1,40)
+        self.camera.setProperties(45,640/480,0.1,10)
         self.player.setProperties(position = [5, 5, 1], eulers = [0, 0, 0])
-
-        self.ppx = 320
-        self.ppy = 240
 
         #COLLECT MESHES
         self.gameMeshes.append(Mesh("models/Triangulated/woodfloor.obj"))  #WOOD FLOOR LEVEL 0 # 0
@@ -78,10 +67,6 @@ class Game:
         self.gameMaterials.append(Matt("Stone", "png"))     #STONE            # 8
         self.gameMaterials.append(Matt("crate", "png"))     #TEST CRATE       # 9
 
-        self.tilecreator.createInitial(self.player.vposition)
-
-
-        #EIGHT RANDOM LIGHTS
         for i in range(11):
             self.lights.append(Light(
                 name = "light " + str(i),
@@ -93,25 +78,18 @@ class Game:
         pass
 
     def slowUpdate(self): #called every certain amount of time
-        self.tilecreator.iterateTileCreation(self.player.vposition, 50)
-
-
+        self.tilecreator.fillYards(self.player.vposition, 50)
         return
-        if(abs(self.player.position[0] - self.prevPlayerPos[0]) > 1 or abs(self.player.position[1] - self.prevPlayerPos[1]) > 1):
-            self.tilecreator.iterateTileCreation(self.player.vposition, 5)
-            self.prevPlayerPos = [int(self.player.position[0]), int(self.player.position[1])]
-            #print(self.player.position, self.prevPlayerPos)
-            pass
-        pass
+
 
     def mouseInputUpdate(self):
         ### mouse control ##
 
         (x,y) = pg.mouse.get_pos()
-        theta_increment = self.frameTime * 0.05 * (320 - x)
-        phi_increment = self.frameTime * 0.05 * (240 - y)
+        theta_increment = self.frameTime * 0.05 * (self.view.hres/2 - x)
+        phi_increment = self.frameTime * 0.05 * (self.view.vres/2 - y)
         self.player.increment_direction(theta_increment, phi_increment)
-        pg.mouse.set_pos((320,240))
+        pg.mouse.set_pos((self.view.hres/2,self.view.vres/2))
         
         pass
 
@@ -126,7 +104,7 @@ class Game:
 
         if keys[pg.K_SPACE]:
             if self.spkeydown == False:
-                self.player.jump(0.005*self.frameTime)
+                self.player.jump(0.5)
                 self.spkeydown = True
         else:
             self.spkeydown = False
@@ -147,7 +125,7 @@ class Game:
 
         if keys[pg.K_c]:
             if self.ckeydown == False:
-                self.tilecreator.iterateTileCreation(self.player.vposition, 50)
+                self.tilecreator.generateCurrentYard(self.player.vposition)
                 self.ckeydown = True
         else:
             self.ckeydown = False
@@ -170,7 +148,7 @@ class Game:
         self.autoCreateMeshTransforms()
         pass
 
-    #Don't change things after here unless you know what you're doing -Rob
+    #Don't change things after here unless you know what you're doing -Olivia
     def mainInit(self):
         self.lastTime = 0
         self.currentTime = 0
@@ -185,9 +163,6 @@ class Game:
             eulers = [0, 0, 0]
         )
         self.prevPlayerPos = [0,1]
-        self.physics = phy.physics(
-            position = [-10, 0, 0]
-        )
         self.camera = Camera(45,640/480,0.1,40)
         self.view = View(640,480)
 
@@ -228,11 +203,6 @@ class Game:
             self.mouseInputUpdate()
             self.inputUpdate()
             self.update()
-
-            # self.physics()
-            #refresh screen
-            #print(self.currentTime)
-            
             self.draw()
             
             
@@ -485,19 +455,6 @@ class Game:
 
         for mesh in self.gameMeshes:
             if(len(mesh.assignedGameObjects) > 0):
-                """for i, mgameObject in enumerate(mesh.assignedGameObjects):
-                    model_transform = pyrr.matrix44.create_identity(dtype=np.float16)
-                    model_transform = pyrr.matrix44.multiply(
-                        m1=model_transform, 
-                        m2=mgameObject.eulermat
-                    )
-                    model_transform = pyrr.matrix44.multiply(
-                        m1=model_transform, 
-                        m2=mgameObject.posmat
-                    )
-                    mesh.transforms[i] = model_transform
-                """
-            
                 glBindVertexArray(mesh.objmesh.vao)
                 glBindBuffer(
                     GL_ARRAY_BUFFER, 
@@ -514,23 +471,6 @@ class Game:
                 )
                 glDrawArraysInstanced(GL_TRIANGLES, 0, mesh.objmesh.vertex_count, len(mesh.assignedGameObjects))
 
-
-
-        #self.gameMaterials[0].matmat.use()
-        
-        """for mesh in self.gameMeshes:
-            if(len(mesh.assignedGameObjects) > 0):
-                mesh.assignedGameObjects[0].material.matmat.use()
-                glDisable(GL_CULL_FACE)
-                glBindVertexArray(mesh.objmesh.vao)
-                glBindBuffer(
-                    GL_ARRAY_BUFFER, 
-                    mesh.transformVBO
-                )
-                glDrawArraysInstanced(GL_TRIANGLES, 0, mesh.objmesh.vertex_count, len(mesh.assignedGameObjects))
-        """
-
-        #glDrawArraysInstanced(GL_TRIANGLES, 0, self.cube_mesh.vertex_count, len(scene.cubes))
         
         glUseProgram(self.shaderColored)
         
@@ -546,22 +486,6 @@ class Game:
         pg.quit()
 
 
-
-
-
-"""
-class GameObject:
-    def __init__(self, name, position, eulers, eulerVelocity, mesh, material):
-        self.name = name
-        self.position = np.array(position, dtype=np.float32)
-        self.eulers = np.array(eulers, dtype=np.float32)
-        self.eulerVelocity = np.array(eulerVelocity, dtype=np.float32)
-        self.mesh = mesh
-        if(self.mesh != None):
-            self.mesh.assignGameObject(self)
-        self.material = material
-"""
-        
 
 class Light:
     def __init__(self, name, position, color):
