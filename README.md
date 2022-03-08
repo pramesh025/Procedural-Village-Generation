@@ -1,13 +1,13 @@
-# twoBird
+# Procedural Village Generation
 A 4th semester project on DSA and Graphics that uses Wave Function Collapse Algorithm to generate infinite procedurally generated structures.
 
 ## Prerequisite:
-Install python along with pip. Then run the following commands to install pyOpengl and its dependencies
+Install python along with pip. Then run the following commands to install pyOpengl and other libraries
 ```
-- pip install pygame
-- pip install numpy
-- pip install pyrr
-- pip install pyopengl
+pip install pygame  
+pip install numpy  
+pip install pyrr  
+pip install pyopengl  
 ```
 
 ## How to run
