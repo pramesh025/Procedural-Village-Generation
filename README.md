@@ -21,6 +21,12 @@ git clone https://github.com/pramesh025/twoBird
 python game.py
 ```
 
+## Controls
+``` W A S D ``` or ``` ← ↑ → ↓ ``` - Movement  
+``` space ``` - Jump/ Fly vertically upward  
+``` G ``` - Toggle Gravity  
+``` LShift ``` - Move Vertically downward  
+
 ## Glimpse
 
 ## Contributors 
