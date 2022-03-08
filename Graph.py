@@ -38,7 +38,7 @@ class ZeGraph: #SINGLETON
         self.addNode(ZeNode("WindowLDouble", BuildingPart(self.CwindowLDouble),4))         #6   Window DOUBLE
         self.addNode(ZeNode("WindowLL", BuildingPart(self.CwindowLL),4))                   #7   Window LL
         self.addNode(ZeNode("WindowLR", BuildingPart(self.CwindowLR),4))                   #8   Window LR
-        self.addNode(ZeNode("Lamp", BuildingPart(self.Clamp),2))                           #9   Lamp
+        self.addNode(ZeNode("Lamp", BuildingPart(self.Clamp),4))                           #9   Lamp
         self.addNode(ZeNode("DoorR", BuildingPart(self.CdoorR),8))                         #10  DoorR
         self.addNode(ZeNode("DoorL", BuildingPart(self.CdoorL),8))                         #11  DoorL
         self.addNode(ZeNode("Corner", BuildingPart(self.Ccorner),10))                      #12  Corner
@@ -62,35 +62,35 @@ class ZeGraph: #SINGLETON
                                 {2,3,4,5,6,7,8,10,11},  #2, -x
                                 {2,3,4,5,6,7,8,10,11}]  #4, -y
 
-        self.nodes[3].nexts = [ {3,4,5,6,7,8,10,11,12},  #0, x
-                                {2,3,5},  #1, y
-                                {3,4,5,6,7,8,10,11,12},  #2, -x
+        self.nodes[3].nexts = [ {1,3,4,5,6,7,8,10,11,12},  #0, x
+                                {2},  #1, y
+                                {1,3,4,5,6,7,8,10,11,12},  #2, -x
                                 {1,9,3,5,10,11}]  #4, -y
 
-        self.nodes[4].nexts = [ {3,4,5,6,7,8,10,12},  #0, x
-                                {2,5},  #1, y
-                                {2,5},  #2, -x
-                                {3,4,5,6,7,8,11,12}]  #4, -y
+        self.nodes[4].nexts = [ {1,3,4,5,6,7,8,10,12},  #0, x
+                                {2},  #1, y
+                                {2},  #2, -x
+                                {1,3,4,5,6,7,8,11,12}]  #4, -y
 
-        self.nodes[5].nexts = [ {3,4,5,6,7,8,10,12},  #0, x
-                                {2,5},  #1, y
-                                {3,4,5,6,7,8,11,12},  #2, -x
+        self.nodes[5].nexts = [ {1,3,4,5,6,7,8,10,12},  #0, x
+                                {2},  #1, y
+                                {1,3,4,5,6,7,8,11,12},  #2, -x
                                 {1,9,3,5,10,11}]  #4, -y
 
-        self.nodes[6].nexts = [ {3,4,5,6,7,8,10,12},  #0, x
-                                {2,5},  #1, y
-                                {2,5},  #2, -x
-                                {3,4,5,6,7,8,11,12}]  #4, -y
+        self.nodes[6].nexts = [ {1,3,4,5,6,7,8,10,12},  #0, x
+                                {2},  #1, y
+                                {2},  #2, -x
+                                {1,3,4,5,6,7,8,11,12}]  #4, -y
 
-        self.nodes[7].nexts = [ {3,4,5,6,7,8,10,12},  #0, x
-                                {2,5},  #1, y
-                                {2,5},  #2, -x
-                                {3,4,5,6,7,8,11,12}]  #4, -y      
+        self.nodes[7].nexts = [ {1,3,4,5,6,7,8,10,12},  #0, x
+                                {2},  #1, y
+                                {2},  #2, -x
+                                {1,3,4,5,6,7,8,11,12}]  #4, -y      
 
-        self.nodes[8].nexts = [ {3,4,5,6,7,8,10,12},  #0, x
-                                {2,5},  #1, y
-                                {2,5},  #2, -x
-                                {3,4,5,6,7,8,11,12}]  #4, -y                  
+        self.nodes[8].nexts = [ {1,3,4,5,6,7,8,10,12},  #0, x
+                                {2},  #1, y
+                                {2},  #2, -x
+                                {1,3,4,5,6,7,8,11,12}]  #4, -y                  
 
         self.nodes[9].nexts = [ {1,3,4,5,6,7,8,9},  #0, x
                                 {1,3,4,5,6,7,8,9},  #1, y
@@ -98,12 +98,12 @@ class ZeGraph: #SINGLETON
                                 {1,3,4,5,6,7,8,9}]  #4, -y
         
         self.nodes[10].nexts = [{11},  #0, x
-                                {2},  #1, y 
+                                {2,1},  #1, y 
                                 {3,4,5,6,7,8,12}, #2, -x
                                 {1,9,12,3,5}]  #4, -y
         
         self.nodes[11].nexts = [{3,4,5,6,7,8,12},  #0, x
-                                {2},  #1, y
+                                {2,1},  #1, y
                                 {10},  #2, -x
                                 {1,9,12,3,5}]  #4, -y
 

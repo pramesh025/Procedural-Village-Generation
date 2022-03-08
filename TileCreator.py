@@ -69,61 +69,76 @@ class Yard:
             for ii in range(-1,2):
                 tc.tiles[(x+i, y+ii)] = Tile(tilecreator=tc, index=(x+i,y+ii), node=2, place=True)
 
+        #                                            X X X
+        #                                          X T T T X
+        #   Generating these tiles:                X T S T X
+        #                                          X T T T X
+        #                                            X X X
+
+        waitingTiles = TileMinHeap()
+
+        for i in range(3):
+            temp = Tile(tilecreator=tc, index=(x-2,y-1+i))
+            tc.generatePossibleNodes(temp)
+            waitingTiles.pushTile(temp)
+            
+
+            temp = Tile(tilecreator=tc, index=(x+2,y-1+i))
+            tc.generatePossibleNodes(temp)
+            waitingTiles.pushTile(temp)
+            
+
+            temp = Tile(tilecreator=tc, index=(x-1+i,y-2))
+            tc.generatePossibleNodes(temp)
+            waitingTiles.pushTile(temp)
+            
+
+            temp = Tile(tilecreator=tc, index=(x-1+i,y+2))
+            tc.generatePossibleNodes(temp)
+            waitingTiles.pushTile(temp)
+            
+
         #                                          X T T T X
         #                                          T T T T T
         #   Generating these tiles:                T T S T T
         #                                          T T T T T
         #                                          X T T T X
 
-
         temp = Tile(tilecreator=tc, index=(x+2,y+2))
         tc.generatePossibleNodes(temp)
-        temp.collapse()
-        temp.placeTile(nodes)
-        tc.tiles[temp.index] = temp
+        waitingTiles.pushTile(temp)
+        
 
         temp = Tile(tilecreator=tc, index=(x-2,y+2))
         tc.generatePossibleNodes(temp)
-        temp.collapse()
-        temp.placeTile(nodes)
-        tc.tiles[temp.index] = temp
+        waitingTiles.pushTile(temp)
+        
 
         temp = Tile(tilecreator=tc, index=(x-2,y-2))
         tc.generatePossibleNodes(temp)
-        temp.collapse()
-        temp.placeTile(nodes)
-        tc.tiles[temp.index] = temp
+        waitingTiles.pushTile(temp)
+        
 
         temp = Tile(tilecreator=tc, index=(x+2,y-2))
         tc.generatePossibleNodes(temp)
-        temp.collapse()
-        temp.placeTile(nodes)
-        tc.tiles[temp.index] = temp
+        waitingTiles.pushTile(temp)
         
-        for i in range(3):
-            temp = Tile(tilecreator=tc, index=(x-2,y-1+i))
-            tc.generatePossibleNodes(temp)
-            temp.collapse()
-            temp.placeTile(nodes)
-            tc.tiles[temp.index] = temp
+        #for tile in waitingTiles.theHeap:
+            #tile.collapse()
+            #tile.placeTile(nodes)
+            #tc.tiles[tile.index] = tile
 
-            temp = Tile(tilecreator=tc, index=(x+2,y-1+i))
-            tc.generatePossibleNodes(temp)
-            temp.collapse()
-            temp.placeTile(nodes)
-            tc.tiles[temp.index] = temp
-
-            temp = Tile(tilecreator=tc, index=(x-1+i,y-2))
-            tc.generatePossibleNodes(temp)
-            temp.collapse()
-            temp.placeTile(nodes)
-            tc.tiles[temp.index] = temp
-
-            temp = Tile(tilecreator=tc, index=(x-1+i,y+2))
-            tc.generatePossibleNodes(temp)
-            temp.collapse()
-            temp.placeTile(nodes)
-            tc.tiles[temp.index] = temp
+        entropyTiles = TileMinHeap()
+        while len(waitingTiles.theHeap) > 0:
+            tile = waitingTiles.theHeap.pop(0)
+            tile.collapse()
+            tile.placeTile(nodes)
+            tc.tiles[tile.index] = tile
+            entropyTiles.theHeap.clear()
+            for othertiles in waitingTiles.theHeap:
+                tc.generatePossibleNodes(othertiles)
+                entropyTiles.pushTile(othertiles)
+            waitingTiles.theHeap = entropyTiles.theHeap.copy()
 
        
 
@@ -201,30 +216,28 @@ class Yard:
         #                                          X T T T X
         #                                            X X X
 
+        waitingTiles = TileMinHeap()
+
         for i in range(3):
             temp = Tile(tilecreator=tc, index=(x-2,y-1+i))
             tc.generatePossibleNodes(temp)
-            temp.collapse()
-            temp.placeTile(nodes)
-            tc.tiles[temp.index] = temp
+            waitingTiles.pushTile(temp)
+            
 
             temp = Tile(tilecreator=tc, index=(x+2,y-1+i))
             tc.generatePossibleNodes(temp)
-            temp.collapse()
-            temp.placeTile(nodes)
-            tc.tiles[temp.index] = temp
+            waitingTiles.pushTile(temp)
+            
 
             temp = Tile(tilecreator=tc, index=(x-1+i,y-2))
             tc.generatePossibleNodes(temp)
-            temp.collapse()
-            temp.placeTile(nodes)
-            tc.tiles[temp.index] = temp
+            waitingTiles.pushTile(temp)
+            
 
             temp = Tile(tilecreator=tc, index=(x-1+i,y+2))
             tc.generatePossibleNodes(temp)
-            temp.collapse()
-            temp.placeTile(nodes)
-            tc.tiles[temp.index] = temp
+            waitingTiles.pushTile(temp)
+            
 
         #                                          X T T T X
         #                                          T T T T T
@@ -232,30 +245,41 @@ class Yard:
         #                                          T T T T T
         #                                          X T T T X
 
-
         temp = Tile(tilecreator=tc, index=(x+2,y+2))
         tc.generatePossibleNodes(temp)
-        temp.collapse()
-        temp.placeTile(nodes)
-        tc.tiles[temp.index] = temp
+        waitingTiles.pushTile(temp)
+        
 
         temp = Tile(tilecreator=tc, index=(x-2,y+2))
         tc.generatePossibleNodes(temp)
-        temp.collapse()
-        temp.placeTile(nodes)
-        tc.tiles[temp.index] = temp
+        waitingTiles.pushTile(temp)
+        
 
         temp = Tile(tilecreator=tc, index=(x-2,y-2))
         tc.generatePossibleNodes(temp)
-        temp.collapse()
-        temp.placeTile(nodes)
-        tc.tiles[temp.index] = temp
+        waitingTiles.pushTile(temp)
+        
 
         temp = Tile(tilecreator=tc, index=(x+2,y-2))
         tc.generatePossibleNodes(temp)
-        temp.collapse()
-        temp.placeTile(nodes)
-        tc.tiles[temp.index] = temp
+        waitingTiles.pushTile(temp)
+        
+        #for tile in waitingTiles.theHeap:
+            #tile.collapse()
+            #tile.placeTile(nodes)
+            #tc.tiles[tile.index] = tile
+
+        entropyTiles = TileMinHeap()
+        while len(waitingTiles.theHeap) > 0:
+            tile = waitingTiles.theHeap.pop(0)
+            tile.collapse()
+            tile.placeTile(nodes)
+            tc.tiles[tile.index] = tile
+            entropyTiles.theHeap.clear()
+            for othertiles in waitingTiles.theHeap:
+                tc.generatePossibleNodes(othertiles)
+                entropyTiles.pushTile(othertiles)
+            waitingTiles.theHeap = entropyTiles.theHeap.copy()
 
 
     def removeYard(self, tc):
