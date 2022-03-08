@@ -16,7 +16,7 @@ Install python along with pip. Then run the following commands to install pyOpen
 git clone https://github.com/pramesh025/twoBird
 ```
 - Navigate into the folder
-- Either run the code in VS code or through terminal by:|
+- Either run the code in VS code or through terminal by:
 ```
 python game.py
 ```
