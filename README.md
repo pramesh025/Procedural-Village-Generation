@@ -28,6 +28,9 @@ python game.py
 ``` LShift ``` - Move Vertically downward  
 
 ## Glimpse
+![lamp Post](https://github.com/pramesh025/twoBird/blob/main/Screenshots/1.PNG)
+![Door](https://github.com/pramesh025/twoBird/blob/main/Screenshots/2.PNG)
+![Interior](https://github.com/pramesh025/twoBird/blob/main/Screenshots/4.PNG)
 
 ## Contributors 
 - Prashant karn (https://github.com/FluxO4)
