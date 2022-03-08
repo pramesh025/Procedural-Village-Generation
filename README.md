@@ -13,7 +13,7 @@ pip install pyopengl
 ## How to run
 - Clone the repo
 ```
-git clone https://github.com/pramesh025/twoBird
+git clone https://github.com/pramesh025/Procedural-Village-Generation
 ```
 - Navigate into the folder
 - Either run the code in VS code or through terminal by:
