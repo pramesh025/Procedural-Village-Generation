@@ -103,12 +103,17 @@ class Game:
             return
 
         if keys[pg.K_SPACE]:
-            if self.spkeydown == False:
-                self.player.jump(0.5)
-                self.spkeydown = True
+            if(self.player.isGravity == True):
+                if self.spkeydown == False:
+                    self.player.jump(0.5)
+                    self.spkeydown = True
+            else:
+                self.player.jump(0.001*self.frameTime)
         else:
             self.spkeydown = False
         pass
+        if keys[pg.K_LSHIFT]:
+            self.player.jump(-0.001*self.frameTime)
         if keys[pg.K_UP] or keys[pg.K_w] or keys[pg.K_COMMA]:
             self.player.moveForward(self.speed*self.frameTime)
             return
@@ -134,14 +139,19 @@ class Game:
     def update(self): #Is called every frame
         ####
         if(self.player.vposition.z > 1.5):
-            self.player.displacement += Vector3(0,0,-0.0001*self.gravity*self.frameTime)
+            if(self.player.isGravity == True):
+                self.player.displacement += Vector3(0,0,-0.0001*self.gravity*self.frameTime)
+            elif(self.player.vposition.z > 7 and self.player.isGravity == False):
+                self.player.displacement = Vector3(0,0,0)
         else:
             if(self.player.displacement.z < 0):
                 self.player.displacement.z = 0
                 self.player.vposition.z = 1.5
             pass
-
-        self.player.translate(self.player.displacement)                               
+        self.player.translate(self.player.displacement)   
+        if(self.player.isGravity == False):
+            self.player.displacement = Vector3(0,0,0)                            
+        
         self.player.position = np.array(self.player.vposition,dtype=np.float32)
         ####
         
